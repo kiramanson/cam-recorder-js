@@ -16,7 +16,7 @@ function camRecorder(options = {}) {
 	const defaultOptions = {
 		constraints: { // stream constraints
 			audio: {
-				echoCancellation: {exact: true}
+				echoCancellation: { exact: true }
 			},
 			video: {
 				/* height: 1920, width: 1080, frameRate: 60, */
@@ -29,27 +29,27 @@ function camRecorder(options = {}) {
 	}
 
 	recordButton.addEventListener('click', () => {
-	if (recordButton.textContent === 'Record') {
-		renderTimer()
-	} else {
-		stopRecording();
-	}
+		if (recordButton.textContent === 'Record') {
+			renderTimer()
+		} else {
+			stopRecording();
+		}
 	});
 
 	playButton.addEventListener('click', () => {
 		stopCamera()
-		const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+		const superBuffer = new Blob(recordedBlobs, { type: 'video/webm' });
 		mainVideo.src = null;
 		mainVideo.srcObject = null;
 		mainVideo.src = window.URL.createObjectURL(superBuffer);
 		mainVideo.controls = true;
 		mainVideo.play();
-		
-		let container = document.querySelector('div#recorded-container')
-		});
 
-		downloadButton.addEventListener('click', () => {
-		const blob = new Blob(recordedBlobs, {type: 'video/mp4'});
+		let container = document.querySelector('div#recorded-container')
+	});
+
+	downloadButton.addEventListener('click', () => {
+		const blob = new Blob(recordedBlobs, { type: 'video/mp4' });
 		const url = window.URL.createObjectURL(blob);
 		const a = document.createElement('a');
 		a.style.display = 'none';
@@ -72,7 +72,7 @@ function camRecorder(options = {}) {
 
 	function startRecording() {
 		recordedBlobs = [];
-		let options = {mimeType: 'video/webm;codecs=vp9,opus'};
+		let options = { mimeType: 'video/webm;codecs=vp9,opus' };
 		try {
 			mediaRecorder = new MediaRecorder(window.stream, options);
 			setTimeout(() => { stopRecording() }, 16000)
@@ -93,7 +93,7 @@ function camRecorder(options = {}) {
 		mediaRecorder.ondataavailable = handleDataAvailable;
 		mediaRecorder.start();
 		console.log('MediaRecorder started', mediaRecorder);
-	
+
 	}
 
 	function stopRecording() {
@@ -116,7 +116,7 @@ function camRecorder(options = {}) {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia(constraints);
 			handleSuccess(stream);
-			
+
 		} catch (e) {
 			//console.error('navigator.getUserMedia error:', e);
 			errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
@@ -124,45 +124,45 @@ function camRecorder(options = {}) {
 	}
 
 	function stopCamera() {
-	window.stream.getTracks().forEach(function (track) {
-		track.stop();
-	})
-	switchCameraBtn()
-	/* document.querySelector('div.overlay-container').remove() */
-	document.querySelector('video#gum').srcObject = null
+		window.stream.getTracks().forEach(function (track) {
+			track.stop();
+		})
+		switchCameraBtn()
+		/* document.querySelector('div.overlay-container').remove() */
+		document.querySelector('video#gum').srcObject = null
 	}
 
 	function switchCameraBtn() {
-		if(startButton.textContent === 'Start camera') startButton.textContent = 'Stop camera';
-	else startButton.textContent = 'Start camera'
+		if (startButton.textContent === 'Start camera') startButton.textContent = 'Stop camera';
+		else startButton.textContent = 'Start camera'
 	}
 
 	document.querySelector('button#start').addEventListener('click', async () => {
-		if(startButton.textContent === 'Start camera') {
-		const hasEchoCancellation = document.querySelector('#echoCancellation').checked;
-		const constraints = {
-			audio: {
-				echoCancellation: {exact: hasEchoCancellation}
-			},
-			video: {
-				/* height: 1920, width: 1080, frameRate: 60, */
-				// height: 1080, width: 1920, frameRate: 60,
-				facingMode: ("facemode")
-			}
-		};
+		if (startButton.textContent === 'Start camera') {
+			const hasEchoCancellation = document.querySelector('#echoCancellation').checked;
+			const constraints = {
+				audio: {
+					echoCancellation: { exact: hasEchoCancellation }
+				},
+				video: {
+					/* height: 1920, width: 1080, frameRate: 60, */
+					// height: 1080, width: 1920, frameRate: 60,
+					facingMode: ("facemode")
+				}
+			};
 		/* console.log('Using media constraints:', constraints) */;
-		await init(constraints);
+			await init(constraints);
 
-		createOverlay()
-	} else {
-		stopCamera()
-	}
+			createOverlay()
+		} else {
+			stopCamera()
+		}
 	});
 
 	function createOverlay() {
 		let overlay = document.createElement('div')
 		overlay.classList.add('overlay')
-		
+
 		let overlayContainer = document.createElement('div')
 		overlayContainer.classList.add('overlay-container')
 		overlayContainer.appendChild(overlay)
@@ -178,14 +178,14 @@ function camRecorder(options = {}) {
 	function defineOverlaySize(overlay, overlayContainer) {
 		let videoTag = document.querySelector('video#gum')
 
-		if(overlayContainer) {
-		overlayContainer.style.height = `${videoTag.scrollHeight / 2}px`
-		overlayContainer.style.width = `${videoTag.scrollWidth}px`
+		if (overlayContainer) {
+			overlayContainer.style.height = `${videoTag.scrollHeight / 2}px`
+			overlayContainer.style.width = `${videoTag.scrollWidth}px`
 		}
-	
+
 		overlay.style.height = `${videoTag.scrollHeight / 4}px`
 		overlay.style.width = `${videoTag.scrollWidth}px`
-	
+
 	}
 
 	var mouseDown = false
@@ -208,30 +208,30 @@ function camRecorder(options = {}) {
 
 	function resizeOverlay(overlay, overlayContainer) {
 		overlayContainer.addEventListener('mousemove', e => {
-			if(e.layerY > mainVideo.scrollHeight) {
+			if (e.layerY > mainVideo.scrollHeight) {
 				deactivateSlider()
 			}
-			else if(mouseDown) {
+			else if (mouseDown) {
 				overlay.style.height = `${e.layerY}px`
 			}
 		})
 	}
 
-	function countDown(action = () => {}, timer = 10, timerLabel = '') {
-		if(timer < 0) {
+	function countDown(action = () => { }, timer = 10, timerLabel = '') {
+		if (timer < 0) {
 			action()
 			timerLabel.innerHTML = ''
 			recordButton.disabled = false
 			document.querySelector('p.timer-label').remove()
 		} else {
 			setTimeout(() => {
-			console.log(timer)
-			timerLabel.innerHTML = timer
+				console.log(timer)
+				timerLabel.innerHTML = timer
 				timer--
-			countDown(action, timer, timerLabel)
+				countDown(action, timer, timerLabel)
 			}, 1000)
 		}
-	} 
+	}
 
 	function renderTimer() {
 		playButton.disabled = true
