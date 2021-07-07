@@ -25,7 +25,7 @@
 	
 	camRotateButton.addEventListener("click", async () => {
 		faceCam = !faceCam
-		console.log('faceCam: ', faceCam)
+		restartCamera()
 	});
   
 	function handleSuccess(stream) {
@@ -44,6 +44,14 @@
 		console.error("navigator.getUserMedia error:", e);
 		// errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
 	  }
+	}
+	
+	function restartCamera() {
+		window.stream.getTracks().forEach(function (track) {
+			track.stop();
+		})
+		switchCameraBtn()
+		await init(constraints)
 	}
   })();
   
