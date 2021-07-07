@@ -34,15 +34,15 @@
   });
 
   camRotateButton.addEventListener("click", async () => {
-    // faceCam = !faceCam;
-    // restartCamera();
-    const track = getVideoTrack();
+    faceCam = !faceCam;
+    restartCamera();
+    // const track = getVideoTrack();
 
-    let facingMode = track.getConstraints().facingMode;
+    // let facingMode = track.getConstraints().facingMode;
 
-    track.applyConstraints({
-      facingMode: facingMode === "environment" ? "user" : "environment",
-    });
+    // track.applyConstraints({
+    //   facingMode: facingMode === "environment" ? "user" : "environment",
+    // });
   });
 
   flashButton.addEventListener("click", async () => {
