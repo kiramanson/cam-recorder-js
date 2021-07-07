@@ -11,7 +11,7 @@
   </head>
   <body>
 
-    <main>
+    <main data-cam="cam-recorder">
       <!-- <video src=""></video> -->
       <video id="gum" playsinline autoplay muted></video>
       <section class="area area__safe">Segura</section>
@@ -20,6 +20,7 @@
       <section class="actions">
         <!-- flash -->
         <svg
+          id="rotate"
           class="flash"
           width="40"
           height="40"
@@ -87,7 +88,8 @@
       </section>
     </main>
 
-    <script src="cam-recorder-top.js"></script>
+    <!-- <script src="cam-recorder-top.js"></script> -->
+    <script src="cam-recorder.js"></script>
   </body>
   <!-- <script src="cam-recorder.js"></script> -->
 </html>
