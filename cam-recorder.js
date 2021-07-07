@@ -7,6 +7,7 @@ class CamRecorder {
     this.camRotateButton = document.querySelector("svg.rotate");
     this.gumVideo = document.querySelector("video#gum");
     this.faceCam = true;
+    this.torch = false
 
     this.init();
   }
@@ -18,10 +19,19 @@ class CamRecorder {
       },
       video: {
         facingMode: this.faceCam ? "user" : "environment",
+        advanced: [{ torch: this.torch }],
       },
     };
 
     await this.record(constraints);
+  }
+  
+  getVideoTrack() {
+    let trackReturn;
+    this.gumVideo.srcObject.getTracks().forEach(function (track) {
+      if (track.kind === "video") trackReturn = track;
+    });
+    return trackReturn;
   }
 
   async record(constraints) {
@@ -42,12 +52,12 @@ class CamRecorder {
     });
   }
 
-  showFlash() {
-    this.gumVideo.srcObject.getTracks().forEach((track) =>
-      track.applyConstraints({
-        advanced: [{ torch: true }],
-      })
-    );
+  async showFlash() {
+    let track = await this.getVideoTrack()
+    
+    track.applyConstraints({
+      advanced: [{ torch: !this.torch }],
+    })
   }
 
   handleSuccess(stream) {
