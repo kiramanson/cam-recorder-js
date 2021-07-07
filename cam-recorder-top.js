@@ -47,7 +47,7 @@
 	}
 	
 	function restartCamera() {
-		window.stream.getTracks().forEach(function (track) {
+		document.querySelector("video#gum").srcObject.getTracks().forEach(function (track) {
 			track.stop();
 		})
 		switchCameraBtn()
