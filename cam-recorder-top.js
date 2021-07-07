@@ -50,7 +50,6 @@
 		document.querySelector("video#gum").srcObject.getTracks().forEach(function (track) {
 			track.stop();
 		})
-		switchCameraBtn()
 		await init(constraints)
 	}
   })();
