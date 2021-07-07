@@ -4,7 +4,7 @@ class CamRecorder {
     console.log(id);
     this.startButton = document.querySelector("svg#start");
     this.rotateButton = document.querySelector("svg#rotate");
-    this.camRotateButton = document.querySelector("svg.rotate");
+    this.flashButton = document.querySelector("svg#flash");
     this.gumVideo = document.querySelector("video#gum");
     this.faceCam = true;
     this.torch = false
@@ -45,18 +45,21 @@ class CamRecorder {
   }
 
   changeCam() {
-    this.camRotateButton.addEventListener("click", () => {
+    this.rotateButton.addEventListener("click", () => {
       this.faceCam = !this.faceCam;
       this.restartCamera();
     });
   }
 
   async showFlash() {
-    let track = await this.getVideoTrack()
-    this.torch = !this.torch
-    track.applyConstraints({
-      advanced: [{ torch: this.torch }],
-    })
+    flashButton.addEventListener("click", async () => {
+      let track = await this.getVideoTrack();
+      this.torch = !this.torch;
+      
+      track.applyConstraints({
+        advanced: [{ torch: this.torch }],
+      });
+    });
   }
 
   handleSuccess(stream) {
@@ -67,11 +70,13 @@ class CamRecorder {
 
   async init() {
     await this.showCamera();
+    await this.changeCam();
+    await this.showFlash();
   }
   
   async restartCamera() {
-    let track = await this.getVideoTrack()
-    track.stop()
+    let track = await this.getVideoTrack();
+    track.stop();
     await this.showCamera();
   }
 }
