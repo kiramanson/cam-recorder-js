@@ -46,7 +46,7 @@
 	  }
 	}
 	
-	function restartCamera() {
+	async function restartCamera() {
 		document.querySelector("video#gum").srcObject.getTracks().forEach(function (track) {
 			track.stop();
 		})
