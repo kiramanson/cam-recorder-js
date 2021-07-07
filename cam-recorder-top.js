@@ -1,8 +1,10 @@
 (function camRecorder(options = {}) {
   const startButton = document.querySelector("svg#start");
   const camRotateButton = document.querySelector("svg.rotate");
+  const flashButton = document.querySelector("svg.flash");
+  const gumVideo = document.querySelector("video#gum");
   let faceCam = true;
-
+  
   function getConstraints() {
     return {
       audio: {
@@ -31,12 +33,21 @@
     faceCam = !faceCam;
     restartCamera();
   });
+  
+  flashButton.addEventListener("click", async () => {
+    gumVideo
+      .srcObject.getTracks()
+      .forEach(function (track) {
+        track.applyConstraints({
+			advanced: [{torch: true}]
+		  });
+      });
+  });
 
   function handleSuccess(stream) {
     /* console.log('getUserMedia() got stream:', stream) */ window.stream =
       stream;
 
-    const gumVideo = document.querySelector("video#gum");
     gumVideo.srcObject = stream;
   }
 
@@ -51,8 +62,7 @@
   }
 
   async function restartCamera() {
-    document
-      .querySelector("video#gum")
+    gumVideo
       .srcObject.getTracks()
       .forEach(function (track) {
         track.stop();
