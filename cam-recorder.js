@@ -46,17 +46,16 @@ class CamRecorder {
 
   changeCam() {
     this.camRotateButton.addEventListener("click", () => {
-      console.log("clicou");
       this.faceCam = !this.faceCam;
-      this.showCamera();
+      this.restartCamera();
     });
   }
 
   async showFlash() {
     let track = await this.getVideoTrack()
-    
+    this.torch = !this.torch
     track.applyConstraints({
-      advanced: [{ torch: !this.torch }],
+      advanced: [{ torch: this.torch }],
     })
   }
 
@@ -69,7 +68,12 @@ class CamRecorder {
   async init() {
     await this.showCamera();
     await this.changeCam();
-    await this.showFlash();
+  }
+  
+  async restartCamera() {
+    let track = await this.getVideoTrack()
+    track.stop()
+    await this.showCamera();
   }
 }
 
