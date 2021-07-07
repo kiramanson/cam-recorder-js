@@ -67,7 +67,6 @@ class CamRecorder {
 
   async init() {
     await this.showCamera();
-    await this.changeCam();
   }
   
   async restartCamera() {
