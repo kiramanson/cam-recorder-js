@@ -7,7 +7,7 @@ class CamRecorder {
     this.flashButton = document.querySelector("svg#flash");
     this.gumVideo = document.querySelector("video#gum");
     this.faceCam = true;
-    this.torch = false
+    this.torch = true
 
     this.init();
   }
@@ -53,11 +53,11 @@ class CamRecorder {
 
   async showFlash() {
     this.flashButton.addEventListener("click", async () => {
-      console.log('flash')
+      this.restartCamera();
+      return;
+      
       let track = await this.getVideoTrack();
-      console.log('track', track)
-      this.torch = !this.torch;
-      console.log('this.torch', this.torch)
+      // this.torch = !this.torch;
       
       track.applyConstraints({
         advanced: [{ torch: this.torch }],
