@@ -7,6 +7,7 @@ class CamRecorder {
     this.flashButton = document.querySelector("svg#flash");
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
+    this.capabilities = document.querySelector("p#comp > span")
     this.faceCam = true;
     this.torch = false
 
@@ -25,6 +26,7 @@ class CamRecorder {
     };
 
     await this.record(constraints);
+    
   }
   
   getVideoTrack() {
@@ -32,6 +34,9 @@ class CamRecorder {
     this.gumVideo.srcObject.getTracks().forEach(function (track) {
       if (track.kind === "video") trackReturn = track;
     });
+    let capabilities = trackReturn.getCapabilities()
+    console.log('capabilities: ', capabilities)
+    this.capabilities.innerHTML = capabilities
     return trackReturn;
   }
 
