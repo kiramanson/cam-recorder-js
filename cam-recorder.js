@@ -66,8 +66,15 @@ class CamRecorder {
       let track = await this.getVideoTrack();
       this.torch = !this.torch;
       
-      track.applyConstraints({
-        advanced: [{ torch: this.torch }],
+      let constraintsTest = { advanced: [{ torch: this.torch }] }
+      
+      track.applyConstraints(constraintsTest)
+        .then(() => {
+         console.log('tudo ok')
+        })
+        .catch(e => {
+          console.log('Catch: ', e)
+          window.alert(e)
       });
       
       let constraints = track.getConstraints()
