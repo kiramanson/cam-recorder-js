@@ -7,7 +7,7 @@ class CamRecorder {
     this.flashButton = document.querySelector("svg#flash");
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
-    this.capabilities = document.querySelector("p#capabilities > span")
+    this.capabilities = document.querySelector("p#capabilities > code")
     this.faceCam = true;
     this.torch = false
 
