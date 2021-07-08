@@ -10,11 +10,6 @@
     rel="stylesheet">
   </head>
   <body>
-    <!-- <div id="container">
-      <div id="video-container">
-        <video id="gum" playsinline autoplay muted></video>
-      </div>
-    </div> -->
 
     <main data-cam="cam-recorder">
       <!-- <video src=""></video> -->
@@ -25,7 +20,7 @@
       <section class="actions">
         <!-- flash -->
         <svg
-          id="rotate"
+          id="flash"
           class="flash"
           width="40"
           height="40"
@@ -70,6 +65,7 @@
 
         <!-- virar câmera -->
         <svg
+          id="rotate"
           class="rotate"
           width="40"
           height="40"
@@ -92,6 +88,11 @@
         </svg>
       </section>
     </main>
+
+    <footer>
+      <p id="footer">Flash Status: <span/> </p>
+      <p id="capabilities">Compatibilidades: <br/><code/> </p>
+    </footer>
 
     <!-- <script src="cam-recorder-top.js"></script> -->
     <script src="cam-recorder.js"></script>
