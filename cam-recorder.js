@@ -7,7 +7,7 @@ class CamRecorder {
     this.flashButton = document.querySelector("svg#flash");
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
-    this.capabilities = document.querySelector("p#capabilities > code")
+    this.capabilities = document.querySelector("p#capabilities > span")
     this.faceCam = true;
     this.torch = false
 
@@ -21,7 +21,7 @@ class CamRecorder {
       },
       video: {
         facingMode: this.faceCam ? "user" : "environment",
-        advanced: [{ torch: this.torch }],
+        torch: this.torch,
       },
     };
 
@@ -67,7 +67,7 @@ class CamRecorder {
       this.torch = !this.torch;
       
       track.applyConstraints({
-        advanced: [{ torch: this.torch }],
+        torch: this.torch,
       });
       
       let constraints = track.getConstraints()
