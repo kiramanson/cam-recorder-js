@@ -21,7 +21,7 @@ class CamRecorder {
       },
       video: {
         facingMode: this.faceCam ? "user" : "environment",
-        torch: this.torch,
+        advanced: [{ torch: this.torch }],
       },
     };
 
@@ -67,7 +67,7 @@ class CamRecorder {
       this.torch = !this.torch;
       
       track.applyConstraints({
-        torch: this.torch,
+        advanced: [{ torch: this.torch }],
       });
       
       let constraints = track.getConstraints()
