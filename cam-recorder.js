@@ -17,7 +17,7 @@ class CamRecorder {
       audio: false,
       video: {
         facingMode: this.faceCam ? "user" : "environment",
-        advanced: [{ torch: false }],
+        advanced: [{ torch: this.torch }],
       },
     };
 
@@ -52,6 +52,7 @@ class CamRecorder {
   }
   
   toggleTorch() {
+    let track = await this.getVideoTrack();
     this.torch = !this.torch;
     track.applyConstraints({
       advanced: [{ torch: this.torch }]
@@ -59,7 +60,7 @@ class CamRecorder {
     this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
   }
   
-  async showTorch() {
+  async initTorch() {
     this.flashButton.removeEventListener("click", this.toggleTorch);
     this.footer.innerHTML = '';
     
@@ -78,7 +79,7 @@ class CamRecorder {
   async handleSuccess(stream) {
     window.stream = stream;
     this.gumVideo.srcObject = stream;
-    await this.showTorch();
+    await this.initTorch();
   }
 
   async init() {
@@ -89,6 +90,7 @@ class CamRecorder {
   async restartCamera() {
     let track = await this.getVideoTrack();
     await track.stop();
+    this.torch = false
     await this.showCamera();
   }
 }
