@@ -51,7 +51,7 @@ class CamRecorder {
     });
   }
   
-  toggleTorch = () => {
+  toggleTorch() {
     this.torch = !this.torch;
     track.applyConstraints({
       advanced: [{ torch: this.torch }]
