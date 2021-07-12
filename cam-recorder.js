@@ -30,7 +30,6 @@ class CamRecorder {
     this.gumVideo.srcObject.getTracks().forEach(function (track) {
       if (track.kind === "video") trackReturn = track;
     });
-    
     return trackReturn;
   }
 
@@ -51,19 +50,19 @@ class CamRecorder {
     });
   }
   
-  async toggleTorch() {
-    let track = await this.getVideoTrack();
-    window.alert(`track`, track);
-    this.torch = !this.torch;
-    window.alert(`torch`, torch);
-    track.applyConstraints({
-      advanced: [{ torch: this.torch }]
-    });
-    this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
-  }
+  // async toggleTorch() {
+  //   let track = await this.getVideoTrack();
+  //   window.alert(`track`, track);
+  //   this.torch = !this.torch;
+  //   window.alert(`torch`, torch);
+  //   track.applyConstraints({
+  //     advanced: [{ torch: this.torch }]
+  //   });
+  //   this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
+  // }
   
   async initTorch() {
-    this.flashButton.removeEventListener("click", this.toggleTorch);
+    // this.flashButton.removeEventListener("click", this.toggleTorch);
     this.footer.innerHTML = '';
     
     let track = await this.getVideoTrack();
@@ -71,7 +70,13 @@ class CamRecorder {
     
     window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
     
-    if(capabilities.torch) this.flashButton.addEventListener("click", this.toggleTorch);
+    if(capabilities.torch) {
+      this.flashButton.addEventListener("click", () => {
+        track.applyConstraints({
+          advanced: [{ torch: this.torch }]
+        });
+      });
+    }
     else this.flashButton.classList.toggle('hidden');
     
     this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`
