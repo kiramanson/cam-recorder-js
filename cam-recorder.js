@@ -81,12 +81,12 @@ class CamRecorder {
 
     this.gumVideo.srcObject = stream;
     
-    await this.showFlash();
   }
 
   async init() {
     await this.showCamera();
     await this.changeCam();
+    await this.showFlash();
   }
   
   async restartCamera() {
