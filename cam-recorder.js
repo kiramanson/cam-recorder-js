@@ -82,7 +82,7 @@ class CamRecorder {
     }
   }
 
-  handleSuccess(stream) {
+  async handleSuccess(stream) {
     window.stream = stream;
 
     this.gumVideo.srcObject = stream;
