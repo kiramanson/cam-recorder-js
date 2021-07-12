@@ -54,12 +54,11 @@ class CamRecorder {
   }
 
   async showFlash() {
-    let track = await this.getVideoTrack();
+    const track = await this.getVideoTrack();
     const capabilities = track.getCapabilities()
     
     if(capabilities.torch) {
       this.flashButton.addEventListener("click", async () => {
-        let track = await this.getVideoTrack();
         this.torch = !this.torch;
         
         track.applyConstraints({
