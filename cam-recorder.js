@@ -14,9 +14,7 @@ class CamRecorder {
 
   async showCamera() {
     const constraints = {
-      audio: {
-        echoCancellation: { exact: true },
-      },
+      audio: false,
       video: {
         facingMode: this.faceCam ? "user" : "environment",
         advanced: [{ torch: false }],
@@ -54,8 +52,12 @@ class CamRecorder {
   }
 
   async showFlash() {
+    this.footer.innerHTML = '---'
+    
     let track = await this.getVideoTrack();
     const capabilities = await track.getCapabilities()
+    
+    window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`)
     
     if(capabilities.torch) {
       this.flashButton.addEventListener("click", async () => {
