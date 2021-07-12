@@ -1,7 +1,5 @@
 class CamRecorder {
   constructor(id) {
-    console.log("iniciou");
-    console.log(id);
     this.startButton = document.querySelector("svg#start");
     this.rotateButton = document.querySelector("svg#rotate");
     this.flashButton = document.querySelector("svg#flash");
@@ -25,7 +23,7 @@ class CamRecorder {
       },
     };
 
-    await this.record(constraints);
+    await this.initCamera(constraints);
     
   }
   
@@ -35,16 +33,10 @@ class CamRecorder {
       if (track.kind === "video") trackReturn = track;
     });
     
-    let capabilities = trackReturn.getCapabilities()
-    let capabilitiesString = JSON.stringify(capabilities)
-    this.capabilities.innerHTML = capabilitiesString
-    console.log('capabilities: ', capabilities)
-    
-    
     return trackReturn;
   }
 
-  async record(constraints) {
+  async initCamera(constraints) {
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.handleSuccess(stream);
@@ -62,37 +54,45 @@ class CamRecorder {
   }
 
   async showFlash() {
-    this.flashButton.addEventListener("click", async () => {
-      let track = await this.getVideoTrack();
-      this.torch = !this.torch;
-      
-      let constraintsTest = { advanced: [{ torch: this.torch }] }
-      
-      track.applyConstraints(constraintsTest)
-        .then(() => {
-         console.log('tudo ok')
-        })
-        .catch(e => {
-          console.log('Catch: ', e)
-          window.alert(e)
+    let capabilities = trackReturn.getCapabilities()
+    if(capabilities.torch) {
+      this.flashButton.addEventListener("click", async () => {
+        let track = await this.getVideoTrack();
+        this.torch = !this.torch;
+        
+        let constraintsTest = { advanced: [{ torch: this.torch }] }
+        
+        track.applyConstraints(constraintsTest)
+          .then(() => {
+          console.log('tudo ok')
+          })
+          .catch(e => {
+            console.log('Catch: ', e)
+            window.alert(e)
+        });
+        
+        let constraints = track.getConstraints()
+        this.footer.innerHTML = constraints.torch ? 'Ligado' : 'Desligado'
       });
-      
-      let constraints = track.getConstraints()
-      this.footer.innerHTML = constraints.torch ? 'Ligado' : 'Desligado'
-      
-  });
+    } else {
+      let capabilities = trackReturn.getCapabilities()
+      // let capabilitiesString = JSON.stringify(capabilities)
+      this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`
+      console.log('capabilities: ', capabilities)
+    }
   }
 
   handleSuccess(stream) {
     window.stream = stream;
 
     this.gumVideo.srcObject = stream;
+    
+    await this.showFlash();
   }
 
   async init() {
     await this.showCamera();
     await this.changeCam();
-    await this.showFlash();
   }
   
   async restartCamera() {

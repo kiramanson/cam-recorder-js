@@ -51,3 +51,7 @@ main {
   .actions .record {
 	margin: 0 40px;
   }
+  
+  .hidden {
+	visibility: hidden;
+  }
