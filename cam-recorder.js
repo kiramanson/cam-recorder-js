@@ -52,8 +52,11 @@ class CamRecorder {
   }
   
   async toggleTorch() {
+    window.alert(`click`);
     let track = await this.getVideoTrack();
+    window.alert(`track`, track);
     this.torch = !this.torch;
+    window.alert(`torch`, torch);
     track.applyConstraints({
       advanced: [{ torch: this.torch }]
     });
