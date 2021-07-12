@@ -91,7 +91,7 @@ class CamRecorder {
   
   async restartCamera() {
     let track = await this.getVideoTrack();
-    track.stop();
+    await track.stop();
     await this.showCamera();
   }
 }
