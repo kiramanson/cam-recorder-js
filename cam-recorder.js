@@ -6,7 +6,7 @@ class CamRecorder {
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
     this.capabilities = document.querySelector("p#capabilities > code")
-    this.faceCam = true;
+    this.faceCam = false;
     this.torch = false
 
     this.init();
