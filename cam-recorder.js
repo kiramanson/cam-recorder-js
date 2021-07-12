@@ -6,7 +6,7 @@ class CamRecorder {
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
     this.capabilities = document.querySelector("p#capabilities > code")
-    this.faceCam = false;
+    this.faceCam = true;
     this.torch = false
 
     this.init();
@@ -52,28 +52,28 @@ class CamRecorder {
   }
 
   async showFlash() {
-    this.footer.innerHTML = '---'
+    const toggleTorch = () => {
+      this.torch = !this.torch;
+      track.applyConstraints({
+        advanced: [{ torch: this.torch }]
+      });
+      this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
+    }
+    
+    this.flashButton.removeEventListener("click", toggleTorch);
+    this.footer.innerHTML = '';
     
     let track = await this.getVideoTrack();
-    const capabilities = await track.getCapabilities()
+    const capabilities = await track.getCapabilities();
     
-    window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`)
+    window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
     
-    if(capabilities.torch) {
-      this.flashButton.addEventListener("click", async () => {
-        this.torch = !this.torch;
-        
-        track.applyConstraints({
-          advanced: [{ torch: this.torch }]
-        })
-        
-        this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado'
-      });
-    } else {
-      this.flashButton.classList.toggle('hidden')
+    if(capabilities.torch) this.flashButton.addEventListener("click", toggleTorch);
+     else {
+      this.flashButton.classList.toggle('hidden');
     }
     this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`
-    console.log('capabilities: ', capabilities)
+    console.log('capabilities: ', capabilities);
   }
 
   async handleSuccess(stream) {
