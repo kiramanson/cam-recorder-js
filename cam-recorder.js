@@ -51,7 +51,7 @@ class CamRecorder {
     });
   }
   
-  toggleTorch() {
+  async toggleTorch() {
     let track = await this.getVideoTrack();
     this.torch = !this.torch;
     track.applyConstraints({
