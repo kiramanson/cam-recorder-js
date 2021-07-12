@@ -19,7 +19,7 @@ class CamRecorder {
       },
       video: {
         facingMode: this.faceCam ? "user" : "environment",
-        advanced: [{ torch: this.torch }],
+        advanced: [{ torch: false }],
       },
     };
 
