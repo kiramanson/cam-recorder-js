@@ -55,23 +55,18 @@ class CamRecorder {
 
   async showFlash() {
     let track = await this.getVideoTrack();
-    let capabilities = track.getConstraints()
+    const capabilities = track.getCapabilities()
+    
     if(capabilities.torch) {
       this.flashButton.addEventListener("click", async () => {
+        let track = await this.getVideoTrack();
         this.torch = !this.torch;
         
-        let constraints = { advanced: [{ torch: this.torch }] }
+        track.applyConstraints({
+          advanced: [{ torch: this.torch }]
+        })
         
-        track.applyConstraints(constraints)
-          .then(() => {
-          console.log('tudo ok')
-          })
-          .catch(e => {
-            console.log('Catch: ', e)
-            window.alert(e)
-        });
-        
-        this.footer.innerHTML = constraints.torch ? 'Ligado' : 'Desligado'
+        this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado'
       });
     } else {
       // let capabilitiesString = JSON.stringify(capabilities)
