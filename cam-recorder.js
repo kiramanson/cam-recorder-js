@@ -50,17 +50,17 @@ class CamRecorder {
       this.restartCamera();
     });
   }
-
-  async showFlash() {
-    const toggleTorch = () => {
-      this.torch = !this.torch;
-      track.applyConstraints({
-        advanced: [{ torch: this.torch }]
-      });
-      this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
-    }
-    
-    this.flashButton.removeEventListener("click", toggleTorch);
+  
+  toggleTorch = () => {
+    this.torch = !this.torch;
+    track.applyConstraints({
+      advanced: [{ torch: this.torch }]
+    });
+    this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
+  }
+  
+  async showTorch() {
+    this.flashButton.removeEventListener("click", this.toggleTorch);
     this.footer.innerHTML = '';
     
     let track = await this.getVideoTrack();
@@ -68,25 +68,22 @@ class CamRecorder {
     
     window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
     
-    if(capabilities.torch) this.flashButton.addEventListener("click", toggleTorch);
-     else {
-      this.flashButton.classList.toggle('hidden');
-    }
+    if(capabilities.torch) this.flashButton.addEventListener("click", this.toggleTorch);
+    else this.flashButton.classList.toggle('hidden');
+    
     this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`
     console.log('capabilities: ', capabilities);
   }
 
   async handleSuccess(stream) {
     window.stream = stream;
-
     this.gumVideo.srcObject = stream;
-    
+    await this.showTorch();
   }
 
   async init() {
     await this.showCamera();
     await this.changeCam();
-    await this.showFlash();
   }
   
   async restartCamera() {
