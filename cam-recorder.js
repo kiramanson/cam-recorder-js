@@ -54,8 +54,8 @@ class CamRecorder {
   }
 
   async showFlash() {
-    const track = await this.getVideoTrack();
-    const capabilities = track.getCapabilities()
+    let track = await this.getVideoTrack();
+    const capabilities = await track.getCapabilities()
     
     if(capabilities.torch) {
       this.flashButton.addEventListener("click", async () => {
@@ -68,10 +68,10 @@ class CamRecorder {
         this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado'
       });
     } else {
-      // let capabilitiesString = JSON.stringify(capabilities)
-      this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`
-      console.log('capabilities: ', capabilities)
+      this.flashButton.classList.toggle('hidden')
     }
+    this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`
+    console.log('capabilities: ', capabilities)
   }
 
   async handleSuccess(stream) {
