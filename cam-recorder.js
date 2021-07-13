@@ -71,6 +71,7 @@ class CamRecorder {
     window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
     
     if(capabilities.torch) {
+      this.torch = !this.torch;
       this.flashButton.addEventListener("click", () => {
         track.applyConstraints({
           advanced: [{ torch: this.torch }]
