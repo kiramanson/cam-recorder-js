@@ -1,13 +1,19 @@
 class CamRecorder {
   constructor(id) {
-    this.startButton = document.querySelector("svg#start");
+    this.recordButton = document.querySelector("svg#record");
     this.rotateButton = document.querySelector("svg#rotate");
     this.flashButton = document.querySelector("svg#flash");
+    this.downloadButton = document.querySelector("svg#download");
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
     this.capabilities = document.querySelector("p#capabilities > code")
     this.faceCam = true;
-    this.torch = false
+    this.torch = false;
+    this.timer = 2; // time in seconds
+    this.videoTime = 3; // time in seconds
+    this.mediaRecorder = null;
+    // this.recordedBlobs = [];
+    this.recordedBlobs = null;
 
     this.init();
   }
@@ -25,7 +31,7 @@ class CamRecorder {
     
   }
   
-  getVideoTrack() {
+  async getVideoTrack() {
     let trackReturn;
     this.gumVideo.srcObject.getTracks().forEach(function (track) {
       if (track.kind === "video") trackReturn = track;
@@ -50,25 +56,77 @@ class CamRecorder {
     });
   }
   
-  // async toggleTorch() {
-  //   let track = await this.getVideoTrack();
-  //   window.alert(`track`, track);
-  //   this.torch = !this.torch;
-  //   window.alert(`torch`, torch);
-  //   track.applyConstraints({
-  //     advanced: [{ torch: this.torch }]
-  //   });
-  //   this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
-  // }
+  initRecordListener() {
+    this.recordButton.addEventListener('click', () => {
+      this.countDown()
+    })
+  }
+  
+  countDown() {
+    if(this.timer) {
+      this.timer -= 1
+      this.renderCountDown()
+      setTimeout(() => { this.countDown() }, 1000)
+      // this.setTimer(this.countDown)
+    }  else {
+      this.recordVideo()
+    }   
+  }
+  
+  renderCountDown() {
+    console.log(this.timer + '...')
+  }
+  
+  async recordVideo() {
+    const options = { mimeType: 'video/webm;codecs=vp9,opus' };
+    try {
+      this.mediaRecorder = await new MediaRecorder(window.stream, options);
+      this.mediaRecorder.ondataavailable = this.handleDataAvailable;
+      this.mediaRecorder.start();
+      setTimeout(() => { this.stopRecording() }, this.videoTime * 1000)
+      // this.setTimer(this.stopRecording, this.videoTime)
+    } catch (e) {
+      console.error('Exception while creating MediaRecorder:', e);
+      return;
+    }
+  }
+  
+  stopRecording() {
+    console.log('Fim da gravação!')
+    this.mediaRecorder.stop();
+    console.log('this.mediaRecorder')
+    console.log(this.mediaRecorder)
+  }
+  
+  handleDataAvailable(event) {
+    if (event.data && event.data.size > 0) {
+      this.recordedBlobs.push(event.data);
+      this.playRecordedVideo();
+    }
+  }
+  
+  async playRecordedVideo() {
+    const superBuffer = new Blob(this.recordedBlobs, {type: 'video/webm'});
+    await this.stopCamera()
+    this.gumVideo.src = null;
+    this.gumVideo.srcObject = null;
+    this.gumVideo.src = window.URL.createObjectURL(superBuffer);
+    this.gumVideo.controls = true;
+    this.gumVideo.play();
+    this.downloadButton.classList.toggle('hidden')
+  }
+  
+  setTimer(action = () => {}, timer = 1) {
+    setTimeout(() => { action() }, timer * 1000)
+  }
   
   async initTorch() {
-    // this.flashButton.removeEventListener("click", this.toggleTorch);
     this.footer.innerHTML = '';
     
     let track = await this.getVideoTrack();
-    const capabilities = await track.getCapabilities();
+    let capabilities = await track.getCapabilities();
     
-    window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
+    // window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
     
     if(capabilities.torch) {
       this.torch = !this.torch;
@@ -80,13 +138,14 @@ class CamRecorder {
     }
     else this.flashButton.classList.toggle('hidden');
     
-    this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`
-    console.log('capabilities: ', capabilities);
+    this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
+    this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch ? 'Sim' : 'Não'}`
   }
 
   async handleSuccess(stream) {
     window.stream = stream;
     this.gumVideo.srcObject = stream;
+    await this.initRecordListener()
     await this.initTorch();
   }
 
@@ -100,6 +159,11 @@ class CamRecorder {
     await track.stop();
     this.torch = false
     await this.showCamera();
+  }
+  
+  async stopCamera() {
+    let track = await this.getVideoTrack();
+    await track.stop();
   }
 }
 
