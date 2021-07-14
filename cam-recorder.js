@@ -13,12 +13,13 @@ class CamRecorder {
     this.videoTime = 3; // time in seconds
     this.mediaRecorder = null;
     this.recordedBlobs = [];
+    this.isMobile = false;
     // this.aspectRatio = 0.5625 // 9:16
     // this.aspectRatio = 1.7777777778 // 16:9
     
     this.aspectRatio = {
-      widescreen: 1.7777777778,
-      default: 0.689655
+      mobile: 1.7777777778,
+      desktop: 0.689655
     }
 
     this.init();
@@ -30,12 +31,11 @@ class CamRecorder {
       video: {
         facingMode: this.faceCam ? "user" : "environment",
         advanced: [{ torch: this.torch }],
-        aspectRatio: this.aspectRatio.default
+        aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop
       },
     };
 
     await this.initCamera(constraints);
-    
   }
   
   async getVideoTrack() {
@@ -186,6 +186,13 @@ class CamRecorder {
   }
 
   async init() {
+    // pegar tipo de device: mobile ou desktop
+    if (navigator.userAgentData != undefined && navigator.userAgentData.mobile) {
+      window.alert('é mobile pohaaaaa carai');
+      this.isMobile = true;
+    }
+    console.log('verificando userAgent: ', navigator.userAgent);
+    console.log('verificando userAgentData: ', navigator.userAgentData);
     await this.showCamera();
     await this.changeCam();
     this.initDownloadListener()
