@@ -18,7 +18,7 @@ class CamRecorder {
     // this.aspectRatio = 1.7777777778 // 16:9
     
     this.aspectRatio = {
-      mobile: 1.7777777778,
+      mobile: 1.45,
       desktop: 0.689655
     }
 
