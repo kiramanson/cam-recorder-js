@@ -3,7 +3,7 @@ class CamRecorder {
     this.recordButton = document.querySelector("svg#record");
     this.rotateButton = document.querySelector("svg#rotate");
     this.flashButton = document.querySelector("svg#flash");
-    this.downloadButton = document.querySelector("svg#download");
+    this.downloadButton = document.querySelector("button#download");
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
     this.capabilities = document.querySelector("p#capabilities > code")
@@ -12,8 +12,14 @@ class CamRecorder {
     this.timer = 2; // time in seconds
     this.videoTime = 3; // time in seconds
     this.mediaRecorder = null;
-    // this.recordedBlobs = [];
-    this.recordedBlobs = null;
+    this.recordedBlobs = [];
+    // this.aspectRatio = 0.5625 // 9:16
+    // this.aspectRatio = 1.7777777778 // 16:9
+    
+    this.aspectRatio = {
+      widescreen: 1.7777777778,
+      default: 0.689655
+    }
 
     this.init();
   }
@@ -24,6 +30,7 @@ class CamRecorder {
       video: {
         facingMode: this.faceCam ? "user" : "environment",
         advanced: [{ torch: this.torch }],
+        aspectRatio: this.aspectRatio.default
       },
     };
 
@@ -81,7 +88,13 @@ class CamRecorder {
     const options = { mimeType: 'video/webm;codecs=vp9,opus' };
     try {
       this.mediaRecorder = await new MediaRecorder(window.stream, options);
-      this.mediaRecorder.ondataavailable = this.handleDataAvailable;
+      this.mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          this.recordedBlobs.push(event.data);
+          this.playRecordedVideo();
+        }
+      }
+      // this.mediaRecorder.ondataavailable = this.handleDataAvailable;
       this.mediaRecorder.start();
       setTimeout(() => { this.stopRecording() }, this.videoTime * 1000)
       // this.setTimer(this.stopRecording, this.videoTime)
@@ -105,15 +118,38 @@ class CamRecorder {
     }
   }
   
-  async playRecordedVideo() {
+  // async playRecordedVideo() {
+  playRecordedVideo() {
     const superBuffer = new Blob(this.recordedBlobs, {type: 'video/webm'});
-    await this.stopCamera()
+    // await this.stopCamera();
+    this.stopCamera();
     this.gumVideo.src = null;
     this.gumVideo.srcObject = null;
     this.gumVideo.src = window.URL.createObjectURL(superBuffer);
     this.gumVideo.controls = true;
     this.gumVideo.play();
-    this.downloadButton.classList.toggle('hidden')
+    this.downloadButton.classList.toggle('hidden');
+  }
+  
+  initDownloadListener() {
+    this.downloadButton.addEventListener('click', () => {
+      this.downloadVideo()
+    })
+  }
+  
+  downloadVideo() {
+    const blob = new Blob(this.recordedBlobs, {type: 'video/mp4'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'test.mp4';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 100);
   }
   
   setTimer(action = () => {}, timer = 1) {
@@ -152,6 +188,7 @@ class CamRecorder {
   async init() {
     await this.showCamera();
     await this.changeCam();
+    this.initDownloadListener()
   }
   
   async restartCamera() {
