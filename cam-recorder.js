@@ -183,7 +183,7 @@ class CamRecorder {
     // else this.flashButton.classList.toggle('hidden');
     
     this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
-    this.capabilities.innerHTML = `navigator.userAgent: ${navigator.userAgent} |||||| Capabilities: ${capabilities}`
+    this.capabilities.innerHTML = `navigator.userAgent: ${navigator.userAgent} |||||| Capabilities: ${JSON.stringify(capabilities)}`
   }
 
   async handleSuccess(stream) {
