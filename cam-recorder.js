@@ -89,7 +89,9 @@ class CamRecorder {
   
   async recordVideo() {
     // const options = { mimeType: 'video/webm;codecs=vp9,opus' };
-    const options = { mimeType: 'video/webm;codecs=vp9,opus' };
+    const options = { mimeType: 'video/webm;codecs=vp9' }; 
+    // opus é codec de áudio, por isso removi, não precisamos definir, pode ser um ponto de quebra no iphone, tentar adicionar codec de algo que não estamos capturando
+    // vou esperar a paola testar antes dessa alteração e depois subir isso pra testar com essa modificação
     try {
       // this.mediaRecorder = await new MediaRecorder(window.stream, options);
       this.mediaRecorder = await new MediaRecorder(this.stream, options);
@@ -170,18 +172,18 @@ class CamRecorder {
     
     // window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
     
-    if(capabilities.torch) {
-      this.torch = !this.torch;
-      this.flashButton.addEventListener("click", () => {
-        track.applyConstraints({
-          advanced: [{ torch: this.torch }]
-        });
-      });
-    }
-    else this.flashButton.classList.toggle('hidden');
+    // if(capabilities.torch) {
+    //   this.torch = !this.torch;
+    //   this.flashButton.addEventListener("click", () => {
+    //     track.applyConstraints({
+    //       advanced: [{ torch: this.torch }]
+    //     });
+    //   });
+    // }
+    // else this.flashButton.classList.toggle('hidden');
     
     this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
-    this.capabilities.innerHTML = `Flash disponível pelo aparelho: ${capabilities.torch ? 'Sim' : 'Não'}`
+    this.capabilities.innerHTML = `navigator.userAgent: ${navigator.userAgent} |||||| Capabilities: ${capabilities}`
   }
 
   async handleSuccess(stream) {
