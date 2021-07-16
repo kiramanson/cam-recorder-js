@@ -89,12 +89,13 @@ class CamRecorder {
   
   async recordVideo() {
     // const options = { mimeType: 'video/webm;codecs=vp9,opus' };
-    const options = { mimeType: 'video/webm;codecs=vp9' }; 
+    // const options = { mimeType: 'video/webm;codecs=vp9' }; 
     // opus é codec de áudio, por isso removi, não precisamos definir, pode ser um ponto de quebra no iphone, tentar adicionar codec de algo que não estamos capturando
     // vou esperar a paola testar antes dessa alteração e depois subir isso pra testar com essa modificação
     try {
       // this.mediaRecorder = await new MediaRecorder(window.stream, options);
-      this.mediaRecorder = await new MediaRecorder(this.stream, options);
+      this.mediaRecorder = await new MediaRecorder(this.stream);
+      
       this.mediaRecorder.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
           this.recordedBlobs.push(event.data);
@@ -183,7 +184,7 @@ class CamRecorder {
     // else this.flashButton.classList.toggle('hidden');
     
     this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
-    this.capabilities.innerHTML = `navigator.userAgent: ${navigator.userAgent} |||||| Capabilities: ${JSON.stringify(capabilities)}`
+    this.capabilities.innerHTML = `navigator.userAgent: ${navigator.userAgent} ||||| navigator.userAgentData: ${navigator.userAgentData} |||||| Capabilities: ${JSON.stringify(capabilities)}`
   }
 
   async handleSuccess(stream) {
@@ -196,12 +197,14 @@ class CamRecorder {
 
   async init() {
     // pegar tipo de device: mobile ou desktop
-    if (navigator.userAgentData != undefined && navigator.userAgentData.mobile) {
-      window.alert('é mobile pohaaaaa carai');
+    const userAgent = navigator.userAgent;
+    const userAgentData = navigator.userAgent;
+    if (userAgentData != undefined && userAgentData.mobile || (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i))) {
+      window.alert('é mobile');
       this.isMobile = true;
     }
-    console.log('verificando userAgent: ', navigator.userAgent);
-    console.log('verificando userAgentData: ', navigator.userAgentData);
+    console.log('verificando userAgent: ', userAgent);
+    console.log('verificando userAgentData: ', userAgentData);
     await this.showCamera();
     await this.changeCam();
     this.initDownloadListener()
