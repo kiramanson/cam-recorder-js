@@ -7,6 +7,7 @@ class CamRecorder {
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
     this.capabilities = document.querySelector("p#capabilities > code")
+    this.counter = document.querySelector("p#counter > b")
     this.faceCam = true;
     this.torch = false;
     this.timer = 2; // time in seconds
@@ -14,6 +15,7 @@ class CamRecorder {
     this.mediaRecorder = null;
     this.recordedBlobs = [];
     this.isMobile = false;
+    this.stream = null;
     // this.aspectRatio = 0.5625 // 9:16
     // this.aspectRatio = 1.7777777778 // 16:9
     
@@ -81,13 +83,16 @@ class CamRecorder {
   }
   
   renderCountDown() {
-    console.log(this.timer + '...')
+    console.log(this.timer + '...');
+    this.counter.innerHTML = `${this.timer}...`
   }
   
   async recordVideo() {
+    // const options = { mimeType: 'video/webm;codecs=vp9,opus' };
     const options = { mimeType: 'video/webm;codecs=vp9,opus' };
     try {
-      this.mediaRecorder = await new MediaRecorder(window.stream, options);
+      // this.mediaRecorder = await new MediaRecorder(window.stream, options);
+      this.mediaRecorder = await new MediaRecorder(this.stream, options);
       this.mediaRecorder.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
           this.recordedBlobs.push(event.data);
@@ -120,7 +125,8 @@ class CamRecorder {
   
   // async playRecordedVideo() {
   playRecordedVideo() {
-    const superBuffer = new Blob(this.recordedBlobs, {type: 'video/webm'});
+    // const superBuffer = new Blob(this.recordedBlobs, {type: 'video/webm'});
+    const superBuffer = new Blob(this.recordedBlobs, { type: 'video/mp4' });
     // await this.stopCamera();
     this.stopCamera();
     this.gumVideo.src = null;
@@ -138,7 +144,7 @@ class CamRecorder {
   }
   
   downloadVideo() {
-    const blob = new Blob(this.recordedBlobs, {type: 'video/mp4'});
+    const blob = new Blob(this.recordedBlobs, { type: 'video/mp4' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
@@ -179,7 +185,8 @@ class CamRecorder {
   }
 
   async handleSuccess(stream) {
-    window.stream = stream;
+    // window.stream = stream;
+    this.stream = stream;
     this.gumVideo.srcObject = stream;
     await this.initRecordListener()
     await this.initTorch();
