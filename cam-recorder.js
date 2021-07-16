@@ -184,7 +184,7 @@ class CamRecorder {
     // else this.flashButton.classList.toggle('hidden');
     
     this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
-    this.capabilities.innerHTML = `navigator.userAgent: ${navigator.userAgent} ||||| navigator.userAgentData: ${JSON.stringify(navigator.userAgentData)} |||||| Capabilities: ${JSON.stringify(capabilities)}`
+    this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`
   }
 
   async handleSuccess(stream) {
@@ -197,9 +197,9 @@ class CamRecorder {
 
   async init() {
     // pegar tipo de device: mobile ou desktop
-    const userAgent = navigator.userAgent;
-    const userAgentData = navigator.userAgentData;
-    if (userAgentData != undefined && userAgentData.mobile || (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i))) {
+    const userAgent = window.navigator.userAgent;
+    const userAgentData = window.navigator.userAgentData;
+    if (userAgentData != undefined && userAgentData.mobile || userAgent.match(/Mobile/i)) {
       window.alert('é mobile');
       this.isMobile = true;
     }
