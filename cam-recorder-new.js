@@ -29,6 +29,7 @@ async function showCamera() {
 async function record(constraints) {
   try {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    log(stream)
     handleSuccess(stream);
   } catch (e) {
     console.error("navigator.getUserMedia error:", e);

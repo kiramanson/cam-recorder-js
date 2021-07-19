@@ -16,11 +16,14 @@
 
     <main data-cam="cam-recorder">
       <!-- <video src=""></video> -->
+      <div id="counter" class="counter"><b></b></div>
       <video id="gum" playsinline autoplay muted></video>
       <section class="area area__safe">Segura</section>
       <section class="area area__public">Pública</section>
+      <p id="start" class="steps">Prepare-se ...</p>
+      <p id="end" class="steps">Fimmm</p>
 
-      <section class="actions">
+      <section class="actions" id="actions">
         <!-- flash -->
         <svg
           id="flash"
@@ -93,7 +96,7 @@
     </main>
 
     <footer>
-      <p id="counter">Counter: <b></b></p>
+      <!-- <p id="counter" class="counter">Counter: <b></b></p> -->
       <button id="download" class="hidden">Download</button>
       <p id="footer">Flash Status: <span/> </p>
       <p id="capabilities">Compatibilidades: <br/><code/> </p>

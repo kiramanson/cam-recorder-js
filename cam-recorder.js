@@ -7,10 +7,13 @@ class CamRecorder {
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span")
     this.capabilities = document.querySelector("p#capabilities > code")
-    this.counter = document.querySelector("p#counter > b")
+    this.counter = document.querySelector("div#counter > b")
     this.faceCam = true;
     this.torch = false;
-    this.timer = 2; // time in seconds
+    this.timer = 6; // time in seconds
+    // this.timer = 5.1; // time in seconds
+    // this.timer = 5300; // time in miliseconds
+    // this.timer = 5000; // time in miliseconds
     this.videoTime = 3; // time in seconds
     this.mediaRecorder = null;
     this.recordedBlobs = [];
@@ -73,18 +76,36 @@ class CamRecorder {
   
   countDown() {
     if(this.timer) {
+      this.renderCountDown();
       this.timer -= 1
-      this.renderCountDown()
-      setTimeout(() => { this.countDown() }, 1000)
+      // this.timer -= 1000
+      setTimeout(() => { this.countDown() }, 1000);
       // this.setTimer(this.countDown)
     }  else {
-      this.recordVideo()
-    }   
+      this.recordVideo();
+    }
+
+    // if (!this.timer) return this.recordVideo();
+
+    // setTimeout(() => {
+    //   console.log('caiu no setTimeout, diminuir 1s');
+    //   this.renderCountDown();
+    //   this.timer -= 1000;
+    // }, this.timer);
   }
   
   renderCountDown() {
-    console.log(this.timer + '...');
-    this.counter.innerHTML = `${this.timer}...`
+    console.log(`${this.timer - 1}...`);
+    // if(this.timer > 0){
+    //   document.getElementById("counter").style.display = "block";
+    //   this.counter.innerHTML = `${this.timer}`;
+    // } else {
+    //   document.getElementById("counter").style.display = "none";
+    // }
+    if(this.timer <= 1) return document.getElementById("counter").style.display = "none";
+
+    document.getElementById("counter").style.display = "block";
+    this.counter.innerHTML = `${this.timer - 1}`;
   }
   
   async recordVideo() {
@@ -94,6 +115,9 @@ class CamRecorder {
     // vou esperar a paola testar antes dessa alteração e depois subir isso pra testar com essa modificação
     try {
       // this.mediaRecorder = await new MediaRecorder(window.stream, options);
+      console.log("Inicio da gravação");
+      document.getElementById("start").style.display = "block";
+      document.getElementById("actions").style.display = "none";
       this.mediaRecorder = await new MediaRecorder(this.stream);
       
       this.mediaRecorder.ondataavailable = (event) => {
@@ -114,6 +138,8 @@ class CamRecorder {
   
   stopRecording() {
     console.log('Fim da gravação!')
+    document.getElementById("start").style.display = "none";
+    document.getElementById("end").style.display = "block";
     this.mediaRecorder.stop();
     console.log('this.mediaRecorder')
     console.log(this.mediaRecorder)
@@ -208,6 +234,9 @@ class CamRecorder {
     await this.showCamera();
     await this.changeCam();
     this.initDownloadListener()
+    document.getElementById("counter").style.display = "none";
+    document.getElementById("start").style.display = "none";
+    document.getElementById("end").style.display = "none";
   }
   
   async restartCamera() {
