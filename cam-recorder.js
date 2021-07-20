@@ -217,12 +217,11 @@ class CamRecorder {
         this.footer.innerHTML = this.torch ? 'Ligado' : 'Desligado';
       });
     }
-    else this.flashButton.classList.toggle('hidden');
   }
   
-  async printCapabilities() {
+  async printCapabilities() { // remover depois 
     const track = await this.getVideoTrack();
-    const capabilities = await track.getCapabilities(); // remover depois junto com o console e print dele
+    const capabilities = await track.getCapabilities();
     console.log(capabilities)
     this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
   }
@@ -230,9 +229,12 @@ class CamRecorder {
   async verifyTorch() {
     const track = await this.getVideoTrack();
     const capabilities = await track.getCapabilities();
-    window.alert('Lanterna disponível pelo aparelho: ' + capabilities.torch);
-    if(capabilities.torch) return true;
-
+    // window.alert('Lanterna disponível pelo aparelho: ' + capabilities.torch);
+    if(capabilities.torch) {
+      this.flashButton.classList.add('hidden');
+      return true;
+    }
+    this.flashButton.classList.remove('hidden');
     return false;
   }
 
@@ -275,6 +277,7 @@ class CamRecorder {
     this.torch = false;
     await this.stopCamera();
     await this.showCamera();
+    await this.verifyTorch();
   }
   
   async stopCamera() {
