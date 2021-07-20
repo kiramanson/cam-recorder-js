@@ -216,8 +216,8 @@ class CamRecorder {
     }
     else this.flashButton.classList.toggle('hidden');
     
-    this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
-    this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`
+    // this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
+    // this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`
   }
 
   async handleSuccess(stream) {
