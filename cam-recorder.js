@@ -10,6 +10,7 @@ class CamRecorder {
     this.counter = document.querySelector("div#counter > b")
     this.faceCam = true;
     this.torch = false;
+    this.srcTimer = 6; // time in seconds
     this.timer = 6; // time in seconds
     // this.timer = 5.1; // time in seconds
     // this.timer = 5300; // time in miliseconds
@@ -70,6 +71,7 @@ class CamRecorder {
   
   initRecordListener() {
     this.recordButton.addEventListener('click', () => {
+      this.timer = this.srcTimer
       this.countDown()
     })
   }
@@ -204,15 +206,15 @@ class CamRecorder {
     
     // window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
     
-    // if(capabilities.torch) {
-    //   this.torch = !this.torch;
-    //   this.flashButton.addEventListener("click", () => {
-    //     track.applyConstraints({
-    //       advanced: [{ torch: this.torch }]
-    //     });
-    //   });
-    // }
-    // else this.flashButton.classList.toggle('hidden');
+    if(capabilities.torch) {
+      this.torch = !this.torch;
+      this.flashButton.addEventListener("click", () => {
+        track.applyConstraints({
+          advanced: [{ torch: this.torch }]
+        });
+      });
+    }
+    else this.flashButton.classList.toggle('hidden');
     
     this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
     this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`
@@ -222,8 +224,6 @@ class CamRecorder {
     // window.stream = stream;
     this.stream = stream;
     this.gumVideo.srcObject = stream;
-    await this.initRecordListener()
-    await this.initTorch();
   }
   
   playSound() {
@@ -247,6 +247,8 @@ class CamRecorder {
     console.log('verificando userAgentData: ', userAgentData);
     await this.showCamera();
     await this.changeCam();
+    await this.initRecordListener()
+    await this.initTorch();
     this.initDownloadListener()
     // document.getElementById("counter").style.display = "none";
     // document.getElementById("start").style.display = "none";
