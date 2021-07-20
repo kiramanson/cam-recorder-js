@@ -202,19 +202,19 @@ class CamRecorder {
     this.footer.innerHTML = '';
     
     let track = await this.getVideoTrack();
-    let capabilities = await track.getCapabilities();
+    // let capabilities = await track.getCapabilities();
     
     // window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
-    window.alert('lanterna: ' + capabilities.torch)
-    if(capabilities.torch) {
+    // window.alert('lanterna: ' + capabilities.torch)
+    // if(capabilities.torch) {
       this.torch = !this.torch;
       this.flashButton.addEventListener("click", () => {
         track.applyConstraints({
           advanced: [{ torch: this.torch }]
         });
       });
-    }
-    else this.flashButton.classList.toggle('hidden');
+    // }
+    // else this.flashButton.classList.toggle('hidden');
     
     // this.footer.innerHTML = capabilities.torch ? 'Ligado' : 'Desligado';
     // this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`
