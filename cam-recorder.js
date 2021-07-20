@@ -212,9 +212,9 @@ class CamRecorder {
             advanced: [{ torch: this.torch }],
           });
         }
+        this.footer.innerHTML = this.torch ? 'Ligado' : 'Desligado';
+        this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
       });
-    this.footer.innerHTML = this.torch ? 'Ligado' : 'Desligado';
-    this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
   }
     else this.flashButton.classList.toggle('hidden');
   }
