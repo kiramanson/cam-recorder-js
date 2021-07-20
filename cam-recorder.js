@@ -175,7 +175,7 @@ class CamRecorder {
   
   initDownloadListener() {
     this.downloadButton.addEventListener('click', () => {
-      this.downloadVideo()
+      this.downloadVideo();
     })
   }
   
@@ -195,34 +195,37 @@ class CamRecorder {
   }
   
   setTimer(action = () => {}, timer = 1) {
-    setTimeout(() => { action() }, timer * 1000)
+    setTimeout(() => { action() }, timer * 1000);
   }
   
   async initTorch() {
-    this.footer.innerHTML = '';
-    
-    let track = await this.getVideoTrack();
-    let capabilities = await track.getCapabilities();
-    
-    window.alert('Tem lanterna: ' + capabilities.torch)
-    
-    if(capabilities.torch) {
+    let hasTorch = await this.verifyTorch();
+    this.footer.innerHTML = 'Desligado';
+    if(hasTorch) {
       this.flashButton.addEventListener("click", async () => {
-        let track2 = await this.getVideoTrack();
-        let capabilities2 = await track2.getCapabilities();
-        if(capabilities2.torch) {
-          window.alert(`Flash disponível pelo aparelho: ${capabilities2.torch? 'Sim' : 'Não'}`);
+        this.footer.innerHTML = 'Desligado';
+        let track = await this.getVideoTrack();
+        let hasTorchYet = await this.verifyTorch();
+        if(hasTorchYet) {
           this.torch = !this.torch;
-          track2.applyConstraints({
-            advanced: [{ torch: this.torch }]
+          track.applyConstraints({
+            advanced: [{ torch: this.torch }],
           });
         }
       });
-    }
-    else this.flashButton.classList.toggle('hidden');
-    
     this.footer.innerHTML = this.torch ? 'Ligado' : 'Desligado';
-    this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`
+    this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
+  }
+    else this.flashButton.classList.toggle('hidden');
+  }
+  
+  async verifyTorch() {
+    const track = await this.getVideoTrack();
+    const capabilities = await track.getCapabilities();
+    window.alert('Lanterna disponível pelo aparelho: ' + capabilities.torch);
+    if(capabilities.torch) return true;
+
+    return false;
   }
 
   async handleSuccess(stream) {
@@ -232,12 +235,12 @@ class CamRecorder {
   }
   
   playSound() {
-    const audio = document.querySelector('audio')
-    audio.play()
+    const audio = document.querySelector('audio');
+    audio.play();
   }
   
   toggleEl(el) {
-    el.classList.toggle('hidden')
+    el.classList.toggle('hidden');
   }
 
   async init() {
@@ -254,15 +257,15 @@ class CamRecorder {
     await this.changeCam();
     await this.initRecordListener()
     await this.initTorch();
-    this.initDownloadListener()
+    this.initDownloadListener();
     // document.getElementById("counter").style.display = "none";
     // document.getElementById("start").style.display = "none";
     // document.getElementById("end").style.display = "none";
   }
   
   async restartCamera() {
-    this.torch = false
-    await this.stopCamera()
+    this.torch = false;
+    await this.stopCamera();
     await this.showCamera();
   }
   
