@@ -105,6 +105,8 @@ class CamRecorder {
     if(this.timer <= 1) return document.getElementById("counter").style.display = "none";
 
     document.getElementById("counter").style.display = "block";
+    document.getElementById("start").style.display = "block";
+    document.getElementById("actions").style.display = "none";
     this.counter.innerHTML = `${this.timer - 1}`;
   }
   
@@ -115,9 +117,11 @@ class CamRecorder {
     // vou esperar a paola testar antes dessa alteração e depois subir isso pra testar com essa modificação
     try {
       // this.mediaRecorder = await new MediaRecorder(window.stream, options);
+      this.playSound()
       console.log("Inicio da gravação");
-      document.getElementById("start").style.display = "block";
-      document.getElementById("actions").style.display = "none";
+      document.getElementById("recording").style.display = "block";
+      // document.getElementById("start").style.display = "block";
+      // document.getElementById("actions").style.display = "none";
       this.mediaRecorder = await new MediaRecorder(this.stream);
       
       this.mediaRecorder.ondataavailable = (event) => {
@@ -140,6 +144,7 @@ class CamRecorder {
     console.log('Fim da gravação!')
     document.getElementById("start").style.display = "none";
     document.getElementById("end").style.display = "block";
+    document.getElementById("recording").style.display = "none";
     this.mediaRecorder.stop();
     console.log('this.mediaRecorder')
     console.log(this.mediaRecorder)
@@ -220,6 +225,15 @@ class CamRecorder {
     await this.initRecordListener()
     await this.initTorch();
   }
+  
+  playSound() {
+    const audio = document.querySelector('audio')
+    audio.play()
+  }
+  
+  toggleEl(el) {
+    el.classList.toggle('hidden')
+  }
 
   async init() {
     // pegar tipo de device: mobile ou desktop
@@ -234,9 +248,9 @@ class CamRecorder {
     await this.showCamera();
     await this.changeCam();
     this.initDownloadListener()
-    document.getElementById("counter").style.display = "none";
-    document.getElementById("start").style.display = "none";
-    document.getElementById("end").style.display = "none";
+    // document.getElementById("counter").style.display = "none";
+    // document.getElementById("start").style.display = "none";
+    // document.getElementById("end").style.display = "none";
   }
   
   async restartCamera() {
