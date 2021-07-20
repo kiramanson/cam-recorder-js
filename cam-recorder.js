@@ -204,15 +204,16 @@ class CamRecorder {
     let track = await this.getVideoTrack();
     let capabilities = await track.getCapabilities();
     
-      window.alert('tem lanterna: ' + capabilities.torch)
-      if(capabilities.torch) {
+    window.alert('Tem lanterna: ' + capabilities.torch)
+    
+    if(capabilities.torch) {
       this.flashButton.addEventListener("click", async () => {
-        window.alert('tem lanterna: ' + capabilities.torch)
-        let capabilities2 = await track.getCapabilities();
+        let track2 = await this.getVideoTrack();
+        let capabilities2 = await track2.getCapabilities();
         if(capabilities2.torch) {
-          window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
+          window.alert(`Flash disponível pelo aparelho: ${capabilities2.torch? 'Sim' : 'Não'}`);
           this.torch = !this.torch;
-          track.applyConstraints({
+          track2.applyConstraints({
             advanced: [{ torch: this.torch }]
           });
         }
@@ -220,7 +221,7 @@ class CamRecorder {
     }
     else this.flashButton.classList.toggle('hidden');
     
-    this.footer.innerHTML = track.advanced.torch ? 'Ligado' : 'Desligado';
+    this.footer.innerHTML = this.torch ? 'Ligado' : 'Desligado';
     this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`
   }
 
@@ -260,9 +261,8 @@ class CamRecorder {
   }
   
   async restartCamera() {
-    let track = await this.getVideoTrack();
-    await track.stop();
     this.torch = false
+    await this.stopCamera()
     await this.showCamera();
   }
   
