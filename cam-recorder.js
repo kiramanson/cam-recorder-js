@@ -203,6 +203,7 @@ class CamRecorder {
     this.footer.innerHTML = 'Desligado';
     if(hasTorch) {
       this.flashButton.addEventListener("click", async () => {
+        const capabilities = await track.getCapabilities(); // remover depois junto com o console dele
         this.footer.innerHTML = 'Desligado';
         let track = await this.getVideoTrack();
         let hasTorchYet = await this.verifyTorch();
