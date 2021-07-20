@@ -223,7 +223,7 @@ class CamRecorder {
     const track = await this.getVideoTrack();
     const capabilities = await track.getCapabilities();
     console.log(capabilities)
-    this.capabilities.innerHTML = `Lanterna disponível pelo aparelho: userAgentData.mobile: ${capabilities.torch? "Sim" : "Não"} |||| ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
+    this.capabilities.innerHTML = `Lanterna disponível pelo aparelho: ${capabilities.torch ? "Sim" : "Não"} |||| userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
   }
   
   async verifyTorch() {
