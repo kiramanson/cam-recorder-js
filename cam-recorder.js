@@ -206,8 +206,8 @@ class CamRecorder {
     
     window.alert('lanterna: ' + capabilities.torch)
     if(capabilities.torch) {
-        this.flashButton.addEventListener("click", () => {
-      let capabilities2 = await track.getCapabilities();
+      this.flashButton.addEventListener("click", async () => {
+        let capabilities2 = await track.getCapabilities();
         if(capabilities2.torch) {
           window.alert(`Flash disponível pelo aparelho: ${capabilities.torch? 'Sim' : 'Não'}`);
           this.torch = !this.torch;
