@@ -203,7 +203,6 @@ class CamRecorder {
     this.footer.innerHTML = 'Desligado';
     if(hasTorch) {
       this.flashButton.addEventListener("click", async () => {
-        const capabilities = await track.getCapabilities(); // remover depois junto com o console dele
         this.footer.innerHTML = 'Desligado';
         let track = await this.getVideoTrack();
         let hasTorchYet = await this.verifyTorch();
@@ -214,6 +213,7 @@ class CamRecorder {
           });
         }
         this.footer.innerHTML = this.torch ? 'Ligado' : 'Desligado';
+        const capabilities = await track.getCapabilities(); // remover depois junto com o console dele
         this.capabilities.innerHTML = `userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
       });
   }
