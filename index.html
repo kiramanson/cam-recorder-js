@@ -14,15 +14,30 @@
   </head>
   <body>
     <main data-cam="cam-recorder">
-      <!-- <video src=""></video> -->
+          
       <div id="counter" class="counter"><b></b></div>
       <video id="gum" playsinline autoplay muted></video>
+      
+      <div id="progress-bar-wrap" class="progress-bar-wrap">
+        <div id="timer-container" class="timer-container">
+          <span id="video-current-time-display">00:00</span>
+        </div>
+        <div class="container-progress-bar">
+          <div id="progress-bar" class="progress-bar">
+          </div>
+        </div>
+      </div>
+      
       <audio src="./beep.mp3"></audio>
       <section class="area area__safe">Segura</section>
       <section class="area area__public">Pública</section>
-      <p id="start" class="steps">Prepare-se ...</p>
-      <p id="end" class="steps">Fimmm</p>
-      <p id="recording" class="steps recording">Gravando</p>
+      <p id="frame-steps" class="steps"></p>
+      <p id="start" class="steps">Prepare-se...</p>
+      <p id="end" class="steps">Fim do Teste de Gravação!</p>
+      <div id="recording" class="steps recording">
+        <div class="record-icon"></div> 
+        Gravando
+      </div>
 
       <section class="actions" id="actions">
         <!-- flash -->

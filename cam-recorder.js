@@ -5,21 +5,29 @@ class CamRecorder {
     this.flashButton = document.querySelector("svg#flash");
     this.downloadButton = document.querySelector("button#download");
     this.gumVideo = document.querySelector("video#gum");
-    this.footer = document.querySelector("p#footer > span")
-    this.capabilities = document.querySelector("p#capabilities > code")
-    this.counter = document.querySelector("div#counter > b")
+    this.footer = document.querySelector("p#footer > span");
+    this.capabilities = document.querySelector("p#capabilities > code");
+    this.counter = document.querySelector("div#counter > b");
+    this.containerProgressBar = document.querySelector('.container-progress-bar');
+    this.progressBar = document.querySelector('.progress-bar');
+    // this.videoTimeDisplay = document.querySelector('span#video-time-display');
+    this.videoCurrentTimeDisplay = document.querySelector('span#video-current-time-display');
+    this.frameSteps = document.querySelector('p#frame-steps');
     this.faceCam = true;
     this.torch = false;
-    this.srcTimer = 6; // time in seconds
+    this.srcTimer = 3; // time in seconds
     this.timer = 6; // time in seconds
-    // this.timer = 5.1; // time in seconds
-    // this.timer = 5300; // time in miliseconds
-    // this.timer = 5000; // time in miliseconds
-    this.videoTime = 3; // time in seconds
+    this.videoTime = 16; // time in seconds
     this.mediaRecorder = null;
     this.recordedBlobs = [];
     this.isMobile = false;
     this.stream = null;
+    this.frameStepsIndex = 0;
+    this.frameStepsTimes = [0, 5];
+    this.frameStepPhrases = [
+      'Mostre a placa agora!',
+      'Dê uma volta agora!'
+    ]
     // this.aspectRatio = 0.5625 // 9:16
     // this.aspectRatio = 1.7777777778 // 16:9
     
@@ -78,67 +86,73 @@ class CamRecorder {
   
   countDown() {
     if(this.timer) {
-      this.renderCountDown();
-      this.timer -= 1
-      // this.timer -= 1000
+      this.showCountDown();
       setTimeout(() => { this.countDown() }, 1000);
-      // this.setTimer(this.countDown)
     }  else {
+      this.hideCountDown();
       this.recordVideo();
     }
-
-    // if (!this.timer) return this.recordVideo();
-
-    // setTimeout(() => {
-    //   console.log('caiu no setTimeout, diminuir 1s');
-    //   this.renderCountDown();
-    //   this.timer -= 1000;
-    // }, this.timer);
+    this.timer--;
   }
   
-  renderCountDown() {
-    console.log(`${this.timer - 1}...`);
-    // if(this.timer > 0){
-    //   document.getElementById("counter").style.display = "block";
-    //   this.counter.innerHTML = `${this.timer}`;
-    // } else {
-    //   document.getElementById("counter").style.display = "none";
-    // }
-    if(this.timer <= 1) return document.getElementById("counter").style.display = "none";
-
+  showCountDown() {
     document.getElementById("counter").style.display = "block";
     document.getElementById("start").style.display = "block";
     document.getElementById("actions").style.display = "none";
-    this.counter.innerHTML = `${this.timer - 1}`;
+    this.counter.innerHTML = `${this.timer}`;
   }
   
+  hideCountDown() {
+    document.getElementById("counter").style.display = "none";
+    document.getElementById("start").style.display = "none";
+  }
+    
   async recordVideo() {
-    // const options = { mimeType: 'video/webm;codecs=vp9,opus' };
-    // const options = { mimeType: 'video/webm;codecs=vp9' }; 
-    // opus é codec de áudio, por isso removi, não precisamos definir, pode ser um ponto de quebra no iphone, tentar adicionar codec de algo que não estamos capturando
-    // vou esperar a paola testar antes dessa alteração e depois subir isso pra testar com essa modificação
     try {
-      // this.mediaRecorder = await new MediaRecorder(window.stream, options);
       this.playSound()
-      console.log("Inicio da gravação");
-      document.getElementById("recording").style.display = "block";
-      // document.getElementById("start").style.display = "block";
-      // document.getElementById("actions").style.display = "none";
       this.mediaRecorder = await new MediaRecorder(this.stream);
-      
+      document.getElementById("recording").style.display = "block";
+      this.initProgressBar();
+      console.log("Inicio da gravação");
       this.mediaRecorder.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
           this.recordedBlobs.push(event.data);
           this.playRecordedVideo();
         }
       }
-      // this.mediaRecorder.ondataavailable = this.handleDataAvailable;
       this.mediaRecorder.start();
       setTimeout(() => { this.stopRecording() }, this.videoTime * 1000)
-      // this.setTimer(this.stopRecording, this.videoTime)
     } catch (e) {
       console.error('Exception while creating MediaRecorder:', e);
       return;
+    }
+  }
+  
+  initProgressBar() {
+    this.containerProgressBar.style.visibility = 'visible';
+    this.videoCurrentTimeDisplay.style.visibility = 'visible';
+    this.progressBar.style.animation = `load ${this.videoTime}s linear`;
+    this.startTimer();
+  }
+  
+  startTimer() {
+    // this.videoTimeDisplay.textContent = `00:${this.videoTime}`
+    let timer = 0, seconds;
+    setInterval(() => {
+      this.verifySteps(timer);
+      seconds = parseInt(timer % 60, 10);
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      this.videoCurrentTimeDisplay.textContent = "00:" + seconds;
+      if (++timer >= this.videoTime) timer = this.videoTime;
+    }, 1000);
+  };
+  
+  verifySteps(timer) {
+    if(this.frameStepsTimes.includes(timer)) {
+      console.log(this.frameStepPhrases[this.frameStepsIndex]);
+      this.frameSteps.style.display = "block";
+      this.frameSteps.textContent = this.frameStepPhrases[this.frameStepsIndex];
+      this.frameStepsIndex++
     }
   }
   
