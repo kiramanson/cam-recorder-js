@@ -48,8 +48,11 @@ class CamRecorder {
         facingMode: this.faceCam ? "user" : "environment",
         advanced: [{ torch: this.torch }],
         aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop,
-        width: { min: 640, ideal: 1920, max: 1920 },
-        height: { min: 400, ideal: 1080 },
+        // width: { min: 640, ideal: 1920, max: 1920 },
+        // height: { min: 400, ideal: 1080 },
+        // width: { min: 1024, ideal: 1280, max: 1920 },
+        // height: { min: 576, ideal: 720, max: 1080 },
+        frameRate: { ideal: 29.9, max: 59.9 }
       },
     };
 
