@@ -32,7 +32,7 @@ class CamRecorder {
     ]
     // this.aspectRatio = 0.5625 // 9:16
     // this.aspectRatio = 1.7777777778 // 16:9
-    
+
     this.aspectRatio = {
       mobile: 1.45,
       desktop: 0.689655
@@ -47,15 +47,15 @@ class CamRecorder {
       video: {
         facingMode: this.faceCam ? "user" : "environment",
         advanced: [{ torch: this.torch }],
-        aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop
+        aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop,
+        width: { min: 640, ideal: 1920, max: 1920 },
+        height: { min: 400, ideal: 1080 },
       },
-      width: { min: 640, ideal: 1920, max: 1920 },
-      height: { min: 400, ideal: 1080 },
     };
 
     await this.initCamera(constraints);
   }
-  
+
   async getVideoTrack() {
     let trackReturn;
     this.gumVideo.srcObject.getTracks().forEach(function (track) {
@@ -81,37 +81,37 @@ class CamRecorder {
       this.restartCamera();
     });
   }
-  
+
   initRecordListener() {
     this.recordButton.addEventListener('click', () => {
       this.timer = this.srcTimer
       this.countDown()
     })
   }
-  
+
   countDown() {
-    if(this.timer) {
+    if (this.timer) {
       this.showCountDown();
       setTimeout(() => { this.countDown() }, 1000);
-    }  else {
+    } else {
       this.hideCountDown();
       this.recordVideo();
     }
     this.timer--;
   }
-  
+
   showCountDown() {
     document.getElementById("counter").style.display = "block";
     document.getElementById("start").style.display = "block";
     document.getElementById("actions").style.display = "none";
     this.counter.innerHTML = `${this.timer}`;
   }
-  
+
   hideCountDown() {
     document.getElementById("counter").style.display = "none";
     document.getElementById("start").style.display = "none";
   }
-    
+
   async recordVideo() {
     try {
       this.playSound()
@@ -132,14 +132,14 @@ class CamRecorder {
       return;
     }
   }
-  
+
   initProgressBar() {
     this.containerProgressBar.style.visibility = 'visible';
     this.videoCurrentTimeDisplay.style.visibility = 'visible';
     this.progressBar.style.animation = `load ${this.videoTime}s linear`;
     this.startTimer();
   }
-  
+
   startTimer() {
     // this.videoTimeDisplay.textContent = `00:${this.videoTime}`
     let timer = 0, seconds;
@@ -151,16 +151,16 @@ class CamRecorder {
       if (++timer >= this.videoTime) timer = this.videoTime;
     }, 1000);
   };
-  
+
   verifySteps(timer) {
-    if(this.frameStepsTimes.includes(timer)) {
+    if (this.frameStepsTimes.includes(timer)) {
       console.log(this.frameStepPhrases[this.frameStepsIndex]);
       this.frameSteps.style.display = "block";
       this.frameSteps.textContent = this.frameStepPhrases[this.frameStepsIndex];
       this.frameStepsIndex++
     }
   }
-  
+
   stopRecording() {
     console.log('Fim da gravação!')
     document.getElementById("start").style.display = "none";
@@ -171,14 +171,14 @@ class CamRecorder {
     console.log('this.mediaRecorder');
     console.log(this.mediaRecorder);
   }
-  
+
   handleDataAvailable(event) {
     if (event.data && event.data.size > 0) {
       this.recordedBlobs.push(event.data);
       this.playRecordedVideo();
     }
   }
-  
+
   // async playRecordedVideo() {
   playRecordedVideo() {
     // const superBuffer = new Blob(this.recordedBlobs, {type: 'video/webm'});
@@ -192,17 +192,17 @@ class CamRecorder {
     this.gumVideo.play();
     this.downloadButton.classList.toggle('hidden');
   }
-  
+
   initDownloadListener() {
     this.downloadButton.addEventListener('click', () => {
       this.downloadVideo();
     })
   }
-  
+
   initSetTimerListener() {
     this.timers.forEach(item => {
       item.addEventListener('click', () => {
-        let timer = parseInt(item.innerText.replace('s',''));
+        let timer = parseInt(item.innerText.replace('s', ''));
         this.srcTimer = timer;
         this.timers.forEach(subItem => {
           subItem.classList.remove('active');
@@ -211,7 +211,7 @@ class CamRecorder {
       })
     })
   }
-  
+
   downloadVideo() {
     const blob = new Blob(this.recordedBlobs, { type: 'video/mp4' });
     const url = window.URL.createObjectURL(blob);
@@ -226,21 +226,21 @@ class CamRecorder {
       window.URL.revokeObjectURL(url);
     }, 100);
   }
-  
+
   setTimer(timer) {
     this.srcTimer = timer;
   }
-  
+
   async initTorch() {
     this.printCapabilities()
     let hasTorch = await this.verifyTorch();
     this.footer.innerHTML = 'Desligado';
-    if(hasTorch) {
+    if (hasTorch) {
       this.flashButton.addEventListener("click", async () => {
         this.footer.innerHTML = 'Desligado';
         let track = await this.getVideoTrack();
         let hasTorchYet = await this.verifyTorch();
-        if(hasTorchYet) {
+        if (hasTorchYet) {
           this.torch = !this.torch;
           track.applyConstraints({
             advanced: [{ torch: this.torch }],
@@ -251,19 +251,19 @@ class CamRecorder {
       });
     }
   }
-  
+
   async printCapabilities() { // remover depois 
     const track = await this.getVideoTrack();
     const capabilities = await track.getCapabilities();
     console.log(capabilities)
     this.capabilities.innerHTML = `Lanterna disponível pelo aparelho: ${capabilities.torch ? "Sim" : "Não"} |||| userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
   }
-  
+
   async verifyTorch() {
     const track = await this.getVideoTrack();
     const capabilities = await track.getCapabilities();
     // window.alert('Lanterna disponível pelo aparelho: ' + capabilities.torch);
-    if(capabilities.torch) {
+    if (capabilities.torch) {
       this.flashButton.classList.remove('hidden');
       return true;
     }
@@ -276,12 +276,12 @@ class CamRecorder {
     this.stream = stream;
     this.gumVideo.srcObject = stream;
   }
-  
+
   playSound() {
     const audio = document.querySelector('audio');
     audio.play();
   }
-  
+
   toggleEl(el) {
     el.classList.toggle('hidden');
   }
@@ -306,14 +306,14 @@ class CamRecorder {
     // document.getElementById("start").style.display = "none";
     // document.getElementById("end").style.display = "none";
   }
-  
+
   async restartCamera() {
     this.torch = false;
     await this.stopCamera();
     await this.showCamera();
     await this.verifyTorch();
   }
-  
+
   async stopCamera() {
     let track = await this.getVideoTrack();
     await track.stop();
