@@ -7,15 +7,17 @@ class CamRecorder {
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span");
     this.capabilities = document.querySelector("p#capabilities > code");
-    this.counter = document.querySelector("div#counter > b");
+    this.counter = document.querySelector("section#counter > b");
+    this.safeZone = document.querySelector("div#safe-zone");
     this.containerProgressBar = document.querySelector('.container-progress-bar');
     this.progressBar = document.querySelector('.progress-bar');
     // this.videoTimeDisplay = document.querySelector('span#video-time-display');
     this.videoCurrentTimeDisplay = document.querySelector('span#video-current-time-display');
     this.frameSteps = document.querySelector('p#frame-steps');
+    this.timers = [...document.querySelectorAll("footer .timers button")];
     this.faceCam = true;
     this.torch = false;
-    this.srcTimer = 3; // time in seconds
+    this.srcTimer = 5; // time in seconds
     this.timer = 6; // time in seconds
     this.videoTime = 16; // time in seconds
     this.mediaRecorder = null;
@@ -47,6 +49,8 @@ class CamRecorder {
         advanced: [{ torch: this.torch }],
         aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop
       },
+      width: { min: 640, ideal: 1920, max: 1920 },
+      height: { min: 400, ideal: 1080 },
     };
 
     await this.initCamera(constraints);
@@ -62,6 +66,7 @@ class CamRecorder {
 
   async initCamera(constraints) {
     try {
+      // console.log((await navigator.mediaDevices.enumerateDevices()).filter(item => item.kind === 'videoinput'))
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.handleSuccess(stream);
     } catch (e) {
@@ -161,9 +166,10 @@ class CamRecorder {
     document.getElementById("start").style.display = "none";
     document.getElementById("end").style.display = "block";
     document.getElementById("recording").style.display = "none";
+    document.getElementById("frame-steps").style.display = "none";
     this.mediaRecorder.stop();
-    console.log('this.mediaRecorder')
-    console.log(this.mediaRecorder)
+    console.log('this.mediaRecorder');
+    console.log(this.mediaRecorder);
   }
   
   handleDataAvailable(event) {
@@ -193,6 +199,19 @@ class CamRecorder {
     })
   }
   
+  initSetTimerListener() {
+    this.timers.forEach(item => {
+      item.addEventListener('click', () => {
+        let timer = parseInt(item.innerText.replace('s',''));
+        this.srcTimer = timer;
+        this.timers.forEach(subItem => {
+          subItem.classList.remove('active');
+        })
+        item.classList.add('active');
+      })
+    })
+  }
+  
   downloadVideo() {
     const blob = new Blob(this.recordedBlobs, { type: 'video/mp4' });
     const url = window.URL.createObjectURL(blob);
@@ -208,8 +227,8 @@ class CamRecorder {
     }, 100);
   }
   
-  setTimer(action = () => {}, timer = 1) {
-    setTimeout(() => { action() }, timer * 1000);
+  setTimer(timer) {
+    this.srcTimer = timer;
   }
   
   async initTorch() {
@@ -282,6 +301,7 @@ class CamRecorder {
     await this.initRecordListener()
     await this.initTorch();
     this.initDownloadListener();
+    this.initSetTimerListener();
     // document.getElementById("counter").style.display = "none";
     // document.getElementById("start").style.display = "none";
     // document.getElementById("end").style.display = "none";
