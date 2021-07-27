@@ -35,7 +35,8 @@ class CamRecorder {
 
     this.aspectRatio = {
       mobile: 1.45,
-      desktop: 0.689655
+      desktop: 0.689655,
+      test: 0.5625,
     }
 
     this.init();
@@ -45,6 +46,8 @@ class CamRecorder {
     const constraints = {
       audio: false,
       video: {
+        width: 720,
+        height: 1080,
         facingMode: this.faceCam ? "user" : "environment",
         advanced: [{ torch: this.torch }],
         // width: { min: 640, ideal: 1920, max: 1920 },
