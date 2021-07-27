@@ -47,12 +47,24 @@ class CamRecorder {
       video: {
         facingMode: this.faceCam ? "user" : "environment",
         advanced: [{ torch: this.torch }],
-        aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop,
         // width: { min: 640, ideal: 1920, max: 1920 },
         // height: { min: 400, ideal: 1080 },
         // width: { min: 1024, ideal: 1280, max: 1920 },
         // height: { min: 576, ideal: 720, max: 1080 },
-        frameRate: { ideal: 29.9, max: 59.9 }
+        // width: this.isMobile ? {
+        //   min: 640, ideal: 1366, max: 1920
+        // } : {
+        //   min: 640, ideal: 720, max: 1080
+        // },
+        // height: this.isMobile ? {
+        //   min: 576, ideal: 720, max: 1080
+        // } : {
+        //   min: 576, ideal: 1366, max: 1920
+        // },
+        height: { min: 720, max: 1280 },
+        width: { min: 1080, max: 1920 },
+        aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop,
+        // frameRate: { ideal: 29.9, max: 59.9 }
       },
     };
 
@@ -118,7 +130,8 @@ class CamRecorder {
   async recordVideo() {
     try {
       this.playSound()
-      this.mediaRecorder = await new MediaRecorder(this.stream);
+      let options = { mimeType: 'video/webm;codecs=h264' };
+      this.mediaRecorder = await new MediaRecorder(this.stream, options);
       document.getElementById("recording").style.display = "block";
       this.initProgressBar();
       console.log("Inicio da gravação");
