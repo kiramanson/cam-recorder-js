@@ -29,7 +29,11 @@ class CamRecorder {
     this.frameStepPhrases = [
       'Mostre a placa agora!',
       'Dê uma volta agora!'
-    ]
+    ],
+    // this.maxWidth = 1920;
+    this.maxWidth = 1280;
+    // this.maxHeight = 1080;
+    this.maxHeight = 720;
     // this.aspectRatio = 0.5625 // 9:16
     // this.aspectRatio = 1.7777777778 // 16:9
 
@@ -61,10 +65,12 @@ class CamRecorder {
         // } : {
         //   min: 576, ideal: 1366, max: 1920
         // },
-        height: { min: 720, max: 1280 },
-        width: { min: 1080, max: 1920 },
+        // height: { min: 720, max: 1280 },
+        // width: { min: 1080, max: 1920 },
         aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop,
-        // frameRate: { ideal: 29.9, max: 59.9 }
+        width: this.maxWidth,
+        height: this.maxHeight,
+        // frameRate: { ideal: 20, max: 30 }
       },
     };
 
@@ -130,8 +136,9 @@ class CamRecorder {
   async recordVideo() {
     try {
       this.playSound()
-      let options = { mimeType: 'video/webm;codecs=h264' };
+      let options = { mimeType: 'video/webm' };
       this.mediaRecorder = await new MediaRecorder(this.stream, options);
+      // this.mediaRecorder = await new MediaRecorder(this.stream);
       document.getElementById("recording").style.display = "block";
       this.initProgressBar();
       console.log("Inicio da gravação");
@@ -170,7 +177,7 @@ class CamRecorder {
 
   verifySteps(timer) {
     if (this.frameStepsTimes.includes(timer)) {
-      console.log(this.frameStepPhrases[this.frameStepsIndex]);
+      this.playSound()
       this.frameSteps.style.display = "block";
       this.frameSteps.textContent = this.frameStepPhrases[this.frameStepsIndex];
       this.frameStepsIndex++
@@ -178,6 +185,7 @@ class CamRecorder {
   }
 
   stopRecording() {
+    this.playSound()
     console.log('Fim da gravação!')
     document.getElementById("start").style.display = "none";
     document.getElementById("end").style.display = "block";
@@ -271,8 +279,10 @@ class CamRecorder {
   async printCapabilities() { // remover depois 
     const track = await this.getVideoTrack();
     const capabilities = await track.getCapabilities();
-    console.log(capabilities)
-    this.capabilities.innerHTML = `Lanterna disponível pelo aparelho: ${capabilities.torch ? "Sim" : "Não"} |||| userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} |||||  Capabilities: ${JSON.stringify(capabilities)}`;
+    console.log(capabilities);
+    this.maxWidth = capabilities.width.max;
+    this.maxHeight = capabilities.height.max;
+    this.capabilities.innerHTML = `Lanterna disponível pelo aparelho: ${capabilities.torch ? "Sim" : "Não"} |||| userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} <br />Capabilities: <br />Max-Width: ${JSON.stringify(capabilities.width.max)} <br />Max-Height: ${JSON.stringify(capabilities.height.max)}`;
   }
 
   async verifyTorch() {
