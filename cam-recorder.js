@@ -4,6 +4,7 @@ class CamRecorder {
     this.rotateButton = document.querySelector("svg#rotate");
     this.flashButton = document.querySelector("svg#flash");
     this.downloadButton = document.querySelector("button#download");
+    this.contentWrap = document.querySelector("section.content-wrap");
     this.gumVideo = document.querySelector("video#gum");
     this.footer = document.querySelector("p#footer > span");
     this.capabilities = document.querySelector("p#capabilities > code");
@@ -130,7 +131,7 @@ class CamRecorder {
 
   async recordVideo() {
     try {
-      alert("começou a gravar | caiu no try")
+      // alert("começou a gravar | caiu no try")
       this.playSound()
       // let options = { mimeType: 'video/webm' }; não funciona no iPhone
       // let options = { mimeType: 'video/mp4' }; não funciona no Android
@@ -140,7 +141,7 @@ class CamRecorder {
       this.initProgressBar();
       console.log("Inicio da gravação");
       this.mediaRecorder.ondataavailable = (event) => {
-        alert("começou a gravar | caiu no no if dentro do try")
+        // alert("começou a gravar | caiu no no if dentro do try")
         if (event.data && event.data.size > 0) {
           this.recordedBlobs.push(event.data);
           this.playRecordedVideo();
@@ -202,8 +203,8 @@ class CamRecorder {
     }
   }
 
-  // async playRecordedVideo() {
-  playRecordedVideo() {
+  async playRecordedVideo() {
+  // playRecordedVideo() {
     // const superBuffer = new Blob(this.recordedBlobs, {type: 'video/webm'});
     const superBuffer = new Blob(this.recordedBlobs, { type: 'video/mp4' });
     // await this.stopCamera();
@@ -216,6 +217,20 @@ class CamRecorder {
     this.downloadButton.classList.toggle('hidden');
   }
 
+  playRecordedVideo() {
+    const superBuffer = new Blob(this.recordedBlobs, { type: 'video/mp4' });
+    let recordedVideoSource = document.createElement('source');
+    this.stopCamera();
+    this.gumVideo.src = null;
+    this.gumVideo.srcObject = null;
+    recordedVideoSource.type = 'video/webm';
+    recordedVideoSource.src = window.URL.createObjectURL(superBuffer);
+    recordedVideoSource.controls = true;
+    this.contentWrap.appendChild(recordedVideoSource);
+    // recordedVideoSource.play();
+    this.downloadButton.classList.toggle('hidden');
+  }
+  
   initDownloadListener() {
     this.downloadButton.addEventListener('click', () => {
       this.downloadVideo();
@@ -349,3 +364,16 @@ class CamRecorder {
 }
 
 new CamRecorder("cam-recorder");
+
+/*
+let recordedVideo = document.querySelector('#recorded_video');
+      let recordedVideoSource = document.createElement('source');
+      mediaRecorder.onstop = (ev) => {
+        let blob = new Blob(chunks, {'type': 'video/mp4;'});
+        let videoURL = window.URL.createObjectURL(blob);
+        recordedVideoSource.type = 'video/mp4';
+        recordedVideoSource.src = videoURL;
+        recordedVideo.appendChild(recordedVideoSource);
+      }
+
+*/
