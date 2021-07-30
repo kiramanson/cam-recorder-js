@@ -58,22 +58,14 @@ class CamRecorder {
         // height: { min: 400, ideal: 1080 },
         // width: { min: 1024, ideal: 1280, max: 1920 },
         // height: { min: 576, ideal: 720, max: 1080 },
-        // width: this.isMobile ? {
-        //   min: 640, ideal: 1366, max: 1920
-        // } : {
-        //   min: 640, ideal: 720, max: 1080
-        // },
-        // height: this.isMobile ? {
-        //   min: 576, ideal: 720, max: 1080
-        // } : {
-        //   min: 576, ideal: 1366, max: 1920
-        // },
+        width: this.isMobile ? this.maxWidth : this.maxHeight,
+        height: this.isMobile ? this.maxHeight : this.maxWidth,
         // height: { min: 720, max: 1280 },
         // width: { min: 1080, max: 1920 },
-        aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop,
-        width: this.maxWidth,
-        height: this.maxHeight,
-        // frameRate: { ideal: 20, max: 30 }
+        // aspectRatio: this.isMobile ? this.aspectRatio.mobile : this.aspectRatio.desktop,
+        // width: this.maxWidth,
+        // height: this.maxHeight,
+        // frameRate: { min: 20, ideal: 30 }
       },
     };
 
@@ -138,14 +130,17 @@ class CamRecorder {
 
   async recordVideo() {
     try {
+      alert("começou a gravar | caiu no try")
       this.playSound()
-      let options = { mimeType: 'video/webm' };
-      this.mediaRecorder = await new MediaRecorder(this.stream, options);
-      // this.mediaRecorder = await new MediaRecorder(this.stream);
+      // let options = { mimeType: 'video/webm' }; não funciona no iPhone
+      // let options = { mimeType: 'video/mp4' }; não funciona no Android
+      // this.mediaRecorder = await new MediaRecorder(this.stream, options);
+      this.mediaRecorder = await new MediaRecorder(this.stream);
       document.getElementById("recording").style.display = "block";
       this.initProgressBar();
       console.log("Inicio da gravação");
       this.mediaRecorder.ondataavailable = (event) => {
+        alert("começou a gravar | caiu no no if dentro do try")
         if (event.data && event.data.size > 0) {
           this.recordedBlobs.push(event.data);
           this.playRecordedVideo();
@@ -154,6 +149,7 @@ class CamRecorder {
       this.mediaRecorder.start();
       setTimeout(() => { this.stopRecording() }, this.videoTime * 1000)
     } catch (e) {
+      alert("começou a gravar | caiu no catch")
       console.error('Exception while creating MediaRecorder:', e);
       return;
     }
@@ -283,9 +279,12 @@ class CamRecorder {
     const track = await this.getVideoTrack();
     const capabilities = await track.getCapabilities();
     console.log(capabilities);
-    this.maxWidth = capabilities.width.max;
-    this.maxHeight = capabilities.height.max;
-    this.capabilities.innerHTML = `Lanterna disponível pelo aparelho: ${capabilities.torch ? "Sim" : "Não"} |||| userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} <br />Capabilities: <br />Max-Width: ${JSON.stringify(capabilities.width.max)} <br />Max-Height: ${JSON.stringify(capabilities.height.max)}`;
+    if(capabilities.width.max && capabilities.height.max) {
+      this.maxWidth = capabilities.width.max;
+      this.maxHeight = capabilities.height.max;
+    }
+    this.capabilities.innerHTML = JSON.stringify(capabilities);
+    // this.capabilities.innerHTML = `Lanterna disponível pelo aparelho: ${capabilities.torch ? "Sim" : "Não"} |||| userAgentData.mobile: ${JSON.stringify(window.navigator.userAgentData.mobile)} |||||| this.isMobile: ${this.isMobile} |||||| userAgent: ${window.navigator.userAgent} <br />Capabilities: <br />Max-Width: ${JSON.stringify(capabilities.width.max)} <br />Max-Height: ${JSON.stringify(capabilities.height.max)}`;
   }
 
   async verifyTorch() {

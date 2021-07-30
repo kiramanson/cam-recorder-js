@@ -3,8 +3,7 @@ body {
 }
 
 main {
-  max-width: 360px;
-  width: 100%;
+  width: 360px;
   height: 640px;
   background-color: black;
   display: flex;
@@ -15,10 +14,18 @@ main {
   box-sizing: border-box;
 }
 
-video {
-  max-width: 320px;
-  width: 100%;
+.content-wrap {
+  position: relative;
+  width: 320px;
   height: 464px;
+  overflow: hidden;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
 }
 
 .area {
@@ -217,10 +224,6 @@ footer .timers button:hover {
   height: 10px;
   background-color: #ed3a3b;
   border-radius: 50%;
-}
-
-.content-wrap {
-  position: relative;
 }
 
 .safe-zone {
