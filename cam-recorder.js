@@ -51,8 +51,6 @@ class CamRecorder {
     const constraints = {
       audio: false,
       video: {
-        width: 720,
-        height: 1080,
         facingMode: this.faceCam ? "user" : "environment",
         advanced: [{ torch: this.torch }],
         // width: { min: 640, ideal: 1920, max: 1920 },
@@ -203,11 +201,8 @@ class CamRecorder {
     }
   }
 
-  async playRecordedVideo() {
-  // playRecordedVideo() {
-    // const superBuffer = new Blob(this.recordedBlobs, {type: 'video/webm'});
+  playRecordedVideo() {
     const superBuffer = new Blob(this.recordedBlobs, { type: 'video/mp4' });
-    // await this.stopCamera();
     this.stopCamera();
     this.gumVideo.src = null;
     this.gumVideo.srcObject = null;
@@ -217,19 +212,19 @@ class CamRecorder {
     this.downloadButton.classList.toggle('hidden');
   }
 
-  playRecordedVideo() {
-    const superBuffer = new Blob(this.recordedBlobs, { type: 'video/mp4' });
-    let recordedVideoSource = document.createElement('source');
-    this.stopCamera();
-    this.gumVideo.src = null;
-    this.gumVideo.srcObject = null;
-    recordedVideoSource.type = 'video/webm';
-    recordedVideoSource.src = window.URL.createObjectURL(superBuffer);
-    recordedVideoSource.controls = true;
-    this.contentWrap.appendChild(recordedVideoSource);
-    // recordedVideoSource.play();
-    this.downloadButton.classList.toggle('hidden');
-  }
+  // playRecordedVideo() {
+  //   const superBuffer = new Blob(this.recordedBlobs, { type: 'video/mp4' });
+  //   let recordedVideoSource = document.createElement('source');
+  //   this.stopCamera();
+  //   this.gumVideo.src = null;
+  //   this.gumVideo.srcObject = null;
+  //   recordedVideoSource.type = 'video/webm';
+  //   recordedVideoSource.src = window.URL.createObjectURL(superBuffer);
+  //   recordedVideoSource.controls = true;
+  //   this.contentWrap.appendChild(recordedVideoSource);
+  //   // recordedVideoSource.play();
+  //   this.downloadButton.classList.toggle('hidden');
+  // }
   
   initDownloadListener() {
     this.downloadButton.addEventListener('click', () => {
